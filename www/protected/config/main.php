@@ -69,7 +69,7 @@ return array(
 			),
 		),
         'viewRenderer'=>array(
-            'class'=>'application.extensions.yiiext.renderers.smarty.ESmartyViewRenderer',
+            'class'=>'application.vendor.Smarty.ESmartyViewRenderer',
             'fileExtension' => '.tpl',
             //'pluginsDir' => 'application.smartyPlugins',
             //'configDir' => 'application.smartyConfig',
