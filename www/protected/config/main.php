@@ -68,7 +68,7 @@ return array(
 				*/
 			),
 		),
-        'viewRenderer'=>array(
+        /*'viewRenderer'=>array(
             'class'=>'application.vendor.Smarty.ESmartyViewRenderer',
             'fileExtension' => '.tpl',
             //'pluginsDir' => 'application.smartyPlugins',
@@ -79,7 +79,7 @@ return array(
             //    'force_compile' => YII_DEBUG,
             //   ... any Smarty object parameter
             //)
-        ),
+        ),*/
 	),
 
 	// application-level parameters that can be accessed
