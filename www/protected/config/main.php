@@ -80,6 +80,34 @@ return array(
             //   ... any Smarty object parameter
             //)
         ),*/
+		'viewRenderer' => array(
+			'class' => '/vendor/Twig/ETwigViewRenderer',
+
+			// All parameters below are optional, change them to your needs
+			'fileExtension' => '.twig',
+			'options' => array(
+				'autoescape' => true,
+			),
+			'extensions' => array(
+				'My_Twig_Extension',
+			),
+			'globals' => array(
+				'html' => 'CHtml'
+			),
+			'functions' => array(
+				'rot13' => 'str_rot13',
+			),
+			'filters' => array(
+				'jencode' => 'CJSON::encode',
+			),
+//            'enabled' => true,
+			// Change template syntax to Smarty-like (not recommended)
+			/*'lexerOptions' => array(
+				'tag_comment'  => array('{*', '*}'),
+				'tag_block'    => array('{', '}'),
+				'tag_variable' => array('{$', '}')
+			),*/
+		),
 	),
 
 	// application-level parameters that can be accessed
