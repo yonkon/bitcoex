@@ -16,6 +16,7 @@ return array(
 	'import'=>array(
 		'application.models.*',
 		'application.components.*',
+		'application.vendor.ETwigViewRenderer',
 	),
 
 	'defaultController'=>'post',
@@ -81,16 +82,16 @@ return array(
             //)
         ),*/
 		'viewRenderer' => array(
-			'class' => '/vendor/Twig/ETwigViewRenderer',
+			'class' => 'application.vendor.ETwigViewRenderer',
 
 			// All parameters below are optional, change them to your needs
 			'fileExtension' => '.twig',
 			'options' => array(
 				'autoescape' => true,
 			),
-			'extensions' => array(
+			/*'extensions' => array(
 				'My_Twig_Extension',
-			),
+			),*/
 			'globals' => array(
 				'html' => 'CHtml'
 			),
