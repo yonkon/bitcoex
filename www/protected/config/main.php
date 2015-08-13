@@ -7,7 +7,7 @@
 // CWebApplication properties can be configured here.
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'Yii Blog Demo',
+	'name'=>'Bitcoex',
 
 	// preloading 'log' component
 	'preload'=>array('log'),
@@ -18,6 +18,12 @@ return array(
 		'application.components.*',
 		'application.vendor.ETwigViewRenderer',
 	),
+	'modules' => array (
+        'gii' => array(
+            'class' => 'system.gii.GiiModule',
+            'password' => 'root'
+        )
+    ),
 
 	'defaultController'=>'post',
 
