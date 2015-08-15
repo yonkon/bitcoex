@@ -1,2 +1,168 @@
 {% extends 'views/layouts/main.twig' %}
-{%block container %}hello{%endblock%}
+
+{% block head %}
+    {{   parent() }}
+    <script type="text/javascript" src="/js/jquery.jplot/jquery.js"></script>
+    <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="/js/jquery.jplot/excanvas.js"></script><![endif]-->
+    <script type="text/javascript" src="/js/jquery.jplot/jquery.jqplot.js"></script>
+    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.ohlcRenderer.min.js"></script>
+    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.highlighter.min.js"></script>
+    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.cursor.min.js"></script>
+    <link rel="stylesheet" href="/js/jquery.jplot/jquery.jqplot.css">
+{% endblock %}
+
+{% block body_close %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            ohlc = [['07/06/2009', 138.7, 139.68, 135.18, 135.4],
+                ['06/29/2009', 143.46, 144.66, 139.79, 140.02],
+                ['06/22/2009', 140.67, 143.56, 132.88, 142.44],
+                ['06/15/2009', 136.01, 139.5, 134.53, 139.48],
+                ['06/08/2009', 143.82, 144.56, 136.04, 136.97],
+                ['06/01/2009', 136.47, 146.4, 136, 144.67],
+                ['05/26/2009', 124.76, 135.9, 124.55, 135.81],
+                ['05/18/2009', 123.73, 129.31, 121.57, 122.5],
+                ['05/11/2009', 127.37, 130.96, 119.38, 122.42],
+                ['05/04/2009', 128.24, 133.5, 126.26, 129.19],
+                ['04/27/2009', 122.9, 127.95, 122.66, 127.24],
+                ['04/20/2009', 121.73, 127.2, 118.6, 123.9],
+                ['04/13/2009', 120.01, 124.25, 115.76, 123.42],
+                ['04/06/2009', 114.94, 120, 113.28, 119.57],
+                ['03/30/2009', 104.51, 116.13, 102.61, 115.99],
+                ['03/23/2009', 102.71, 109.98, 101.75, 106.85],
+                ['03/16/2009', 96.53, 103.48, 94.18, 101.59],
+                ['03/09/2009', 84.18, 97.2, 82.57, 95.93],
+                ['03/02/2009', 88.12, 92.77, 82.33, 85.3],
+                ['02/23/2009', 91.65, 92.92, 86.51, 89.31],
+                ['02/17/2009', 96.87, 97.04, 89, 91.2],
+                ['02/09/2009', 100, 103, 95.77, 99.16],
+                ['02/02/2009', 89.1, 100, 88.9, 99.72],
+                ['01/26/2009', 88.86, 95, 88.3, 90.13],
+                ['01/20/2009', 81.93, 90, 78.2, 88.36],
+                ['01/12/2009', 90.46, 90.99, 80.05, 82.33],
+                ['01/05/2009', 93.17, 97.17, 90.04, 90.58],
+                ['12/29/2008', 86.52, 91.04, 84.72, 90.75],
+                ['12/22/2008', 90.02, 90.03, 84.55, 85.81],
+                ['12/15/2008', 95.99, 96.48, 88.02, 90],
+                ['12/08/2008', 97.28, 103.6, 92.53, 98.27],
+                ['12/01/2008', 91.3, 96.23, 86.5, 94],
+                ['11/24/2008', 85.21, 95.25, 84.84, 92.67],
+                ['11/17/2008', 88.48, 91.58, 79.14, 82.58],
+                ['11/10/2008', 100.17, 100.4, 86.02, 90.24],
+                ['11/03/2008', 105.93, 111.79, 95.72, 98.24],
+                ['10/27/2008', 95.07, 112.19, 91.86, 107.59],
+                ['10/20/2008', 99.78, 101.25, 90.11, 96.38],
+                ['10/13/2008', 104.55, 116.4, 85.89, 97.4],
+                ['10/06/2008', 91.96, 101.5, 85, 96.8],
+                ['09/29/2008', 119.62, 119.68, 94.65, 97.07],
+                ['09/22/2008', 139.94, 140.25, 123, 128.24],
+                ['09/15/2008', 142.03, 147.69, 120.68, 140.91],
+                ['09/08/2008', 164.57, 164.89, 146, 148.94]
+            ];
+            $.jqplot.config.enablePlugins = true;
+            plot = $.jqplot('jqplot',[ohlc],{
+                title: 'Котировки',
+                axesDefaults:{},
+                axes: {
+                    xaxis: {
+                        renderer:$.jqplot.DateAxisRenderer
+                    },
+                    yaxis: {
+                        tickOptions:{ prefix: '$' }
+                    }
+                },
+                series: [{renderer:$.jqplot.OHLCRenderer, rendererOptions:{candleStick:true}}],
+                cursor:{
+                    zoom:true,
+                    tooltipOffset: 10,
+                    tooltipLocation: 'nw'
+                },
+                highlighter: {
+                    showMarker:false,
+                    tooltipAxes: 'xy',
+                    yvalues: 4,
+                    formatString:'<table class="jqplot-highlighter"> \
+          <tr><td>date:</td><td>%s</td></tr> \
+          <tr><td>open:</td><td>%s</td></tr> \
+          <tr><td>hi:</td><td>%s</td></tr> \
+          <tr><td>low:</td><td>%s</td></tr> \
+          <tr><td>close:</td><td>%s</td></tr></table>'
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block header %}
+    {#<div class="logo container np">#}
+    <div class="col-xs-12 logo-div ">
+        <div class="col-xs-2 logo-img">
+            <img src="img/logo.png" class="">
+        </div>
+        <div class="col-xs-7">
+            <p class="m1e"> Last Price: <b>279.568 USD</b> Low: <b>277 USD</b> High: <b>282.9869 USD</b></p>
+
+            <p class="m1e"> Volume: <b>5275 BTC / 1476257 USD</b> Server Time: <b>04.08.15 02:34</b></p>
+        </div>
+        <div class="col-xs-3">
+            <form>
+                <input type="text" name="email" class="mt1e" placeholder="E-mail">
+                <input type="password" name="email" class="mt1e" placeholder="Пароль">
+            </form>
+            <p class="mt1e"><a href="#">Войти</a>&nbsp;|&nbsp;<a href="#">Регистрация</a>&nbsp;|&nbsp;<a href="#">Забыл
+                    пароль</a></p>
+        </div>
+    </div>
+    {#</div>#}
+{% endblock %}
+
+{% block header_menu %}
+    <div class="col-xs-12 menu1 np">
+        <menu class="col-xs-12 np main-menu">
+            <li><a href="#">Торги</a></li>
+            <li><a href="#">Новости</a></li>
+            <li><a href="#">Правила</a></li>
+            <li><a href="#">Fuck you</a></li>
+            <li><a href="/gii">Gii</a></li>
+        </menu>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="col-xs-8">
+        <div class="col-xs-12">
+            <span><b>Новости</b></span>
+
+            <p class="m1e"><b>19/08/2015</b> <span>Путин хуйло</span></p>
+
+            <p class="m1e"><b>19/08/2015</b> <span>ла-ла-ла</span></p>
+        </div>
+        <div class="col-xs-12">
+            <ul>
+                <li class="price-li price-li-active"><a class="price-a price-a-active">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+                <li class="price-li"><a class="price-a">USD</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-12 np diagramma">
+            <div id="jqplot"></div>{#<img src="img/123.png">#}
+        </div>
+    </div>
+    <div class="col-xs-4">
+       {#{{ dump(dataProvider) }}#}
+    </div>
+{% endblock %}
+
+
+

@@ -72,7 +72,8 @@ class ETwigViewRenderer extends CApplicationComponent implements IViewRenderer
 		Yii::registerAutoloader(array('Twig_Autoloader', 'autoload'), true);
 
 		$app = Yii::app();
-
+		$this->options['html']='CHtml';
+        $this->options['clientScript']=Yii::app()->clientScript;
 		/** @var $theme CTheme */
 		$theme = $app->getTheme();
 
@@ -91,7 +92,10 @@ class ETwigViewRenderer extends CApplicationComponent implements IViewRenderer
 			'auto_reload' => true,
 			'cache' => $app->getRuntimePath() . '/twig_cache/',
 			'charset' => $app->charset,
+			'debug' => true,
 		);
+
+        $this->extensions[] = 'Twig_Extension_Debug';
 		$this->_twig = new Twig_Environment($loader, array_merge($defaultOptions, $this->options));
 
 		// Adding Yii::app() object to globals
