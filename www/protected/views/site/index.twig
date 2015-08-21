@@ -1,12 +1,15 @@
 {% extends 'views/layouts/main.twig' %}
 
 {% block head %}
-    {{   parent() }}
+    {{ parent() }}
     <script type="text/javascript" src="/js/jquery.jplot/jquery.js"></script>
-    <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="/js/jquery.jplot/excanvas.js"></script><![endif]-->
+    <!--[if lt IE 9]>
+    <script language="javascript" type="text/javascript" src="/js/jquery.jplot/excanvas.js"></script><![endif]-->
     <script type="text/javascript" src="/js/jquery.jplot/jquery.jqplot.js"></script>
-    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
-    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+    <script class="include" type="text/javascript"
+            src="/js/jquery.jplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
+    <script class="include" type="text/javascript"
+            src="/js/jquery.jplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
     <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.ohlcRenderer.min.js"></script>
     <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.highlighter.min.js"></script>
     <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.cursor.min.js"></script>
@@ -15,7 +18,19 @@
 
 {% block body_close %}
     <script type="text/javascript">
-        $(document).ready(function(){
+        $(document).ready(function () {
+
+            /* // Add a new localization
+             $.jsDate.regional['it'] = {
+             monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
+             monthNamesShort: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
+             dayNames: ['Domenica','Lunedi','Martedi','Mercoledi','Giovedi','Venerdi','Sabato'],
+             dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
+             formatString: '%d-%m-%Y %H:%M:%S'
+             };
+             // Do not forget to call
+             $.jsDate.regional.getLocale();
+             */
             ohlc = [['07/06/2009', 138.7, 139.68, 135.18, 135.4],
                 ['06/29/2009', 143.46, 144.66, 139.79, 140.02],
                 ['06/22/2009', 140.67, 143.56, 132.88, 142.44],
@@ -62,28 +77,29 @@
                 ['09/08/2008', 164.57, 164.89, 146, 148.94]
             ];
             $.jqplot.config.enablePlugins = true;
-            plot = $.jqplot('jqplot',[ohlc],{
+            plot = $.jqplot('jqplot', [ohlc], {
                 title: 'Котировки',
-                axesDefaults:{},
+                axesDefaults: {},
                 axes: {
                     xaxis: {
-                        renderer:$.jqplot.DateAxisRenderer
+                        renderer: $.jqplot.DateAxisRenderer,
+                        tickOptions: {formatString: '%d %b%n%H:%M:%S'}
                     },
                     yaxis: {
-                        tickOptions:{ prefix: '$' }
+                        tickOptions: {prefix: '$'}
                     }
                 },
-                series: [{renderer:$.jqplot.OHLCRenderer, rendererOptions:{candleStick:true}}],
-                cursor:{
-                    zoom:true,
+                series: [{renderer: $.jqplot.OHLCRenderer, rendererOptions: {candleStick: true}}],
+                cursor: {
+                    zoom: true,
                     tooltipOffset: 10,
                     tooltipLocation: 'nw'
                 },
                 highlighter: {
-                    showMarker:false,
+                    showMarker: false,
                     tooltipAxes: 'xy',
                     yvalues: 4,
-                    formatString:'<table class="jqplot-highlighter"> \
+                    formatString: '<table class="jqplot-highlighter"> \
           <tr><td>date:</td><td>%s</td></tr> \
           <tr><td>open:</td><td>%s</td></tr> \
           <tr><td>hi:</td><td>%s</td></tr> \
@@ -482,7 +498,7 @@
 
     </div>
     <div class="col-xs-4">
-       {#{{ dump(dataProvider) }}#}
+        {#{{ dump(dataProvider) }}#}
     </div>
 {% endblock %}
 
