@@ -127,8 +127,13 @@
                 <input type="text" name="email" class="mt1e" placeholder="E-mail">
                 <input type="password" name="email" class="mt1e" placeholder="Пароль">
             </form>
-            <p class="mt1e"><a href="#">Войти</a>&nbsp;|&nbsp;<a href="#">Регистрация</a>&nbsp;|&nbsp;<a href="#">Забыл
-                    пароль</a></p>
+            <p class="mt1e">
+                {% if App.user.isGuest() %}<a href="{{ App.createUrl('user/login') }}">Войти</a>&nbsp;|&nbsp;
+                {% else %}<a href="{{ App.createUrl('user/logout') }}">{{ App.user.name }}</a>&nbsp;|&nbsp;
+                {% endif %}
+                <a href="#">Регистрация</a>&nbsp;|&nbsp;
+                <a href="#">Забыл пароль</a>
+            </p>
         </div>
     </div>
     {#</div>#}
