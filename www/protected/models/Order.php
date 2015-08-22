@@ -1,27 +1,27 @@
 <?php
 
 /**
- * This is the model class for table "{{transaction}}".
+ * This is the model class for table "{{order}}".
  *
- * The followings are the available columns in table '{{transaction}}':
+ * The followings are the available columns in table '{{order}}':
  * @property integer $id
+ * @property integer $user
  * @property integer $src_wallet
- * @property double $src_count
- * @property double $src_price
+ * @property double $summ
+ * @property double $price
  * @property integer $dst_wallet
- * @property double $dst_count
- * @property double $dst_price
- * @property string $date
- * @property integer $order
+ * @property double $rest
+ * @property integer $date
+ * @property integer $status
  */
-class Transaction extends CActiveRecord
+class Order extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return '{{transaction}}';
+		return '{{order}}';
 	}
 
 	/**
@@ -32,12 +32,12 @@ class Transaction extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('src_wallet, src_count, src_price, dst_wallet, dst_count, dst_price, date', 'required'),
-			array('src_wallet, dst_wallet, order', 'numerical', 'integerOnly'=>true),
-			array('src_count, src_price, dst_count, dst_price', 'numerical'),
+			array('id, user, src_wallet, summ, price, dst_wallet, rest, date, status', 'required'),
+			array('id, user, src_wallet, dst_wallet, date, status', 'numerical', 'integerOnly'=>true),
+			array('summ, price, rest', 'numerical'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, src_wallet, src_count, src_price, dst_wallet, dst_count, dst_price, date, order', 'safe', 'on'=>'search'),
+			array('id, user, src_wallet, summ, price, dst_wallet, rest, date, status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -59,14 +59,14 @@ class Transaction extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
+			'user' => 'User',
 			'src_wallet' => 'Src Wallet',
-			'src_count' => 'Src Count',
-			'src_price' => 'Src Price',
+			'summ' => 'Summ',
+			'price' => 'Price',
 			'dst_wallet' => 'Dst Wallet',
-			'dst_count' => 'Dst Count',
-			'dst_price' => 'Dst Price',
+			'rest' => 'Rest',
 			'date' => 'Date',
-			'order' => 'Order',
+			'status' => 'Status',
 		);
 	}
 
@@ -89,14 +89,14 @@ class Transaction extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
+		$criteria->compare('user',$this->user);
 		$criteria->compare('src_wallet',$this->src_wallet);
-		$criteria->compare('src_count',$this->src_count);
-		$criteria->compare('src_price',$this->src_price);
+		$criteria->compare('summ',$this->summ);
+		$criteria->compare('price',$this->price);
 		$criteria->compare('dst_wallet',$this->dst_wallet);
-		$criteria->compare('dst_count',$this->dst_count);
-		$criteria->compare('dst_price',$this->dst_price);
-		$criteria->compare('date',$this->date,true);
-		$criteria->compare('order',$this->order);
+		$criteria->compare('rest',$this->rest);
+		$criteria->compare('date',$this->date);
+		$criteria->compare('status',$this->status);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -107,7 +107,7 @@ class Transaction extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Transaction the static model class
+	 * @return Order the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
