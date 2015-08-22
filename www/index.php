@@ -1,4 +1,6 @@
 <?php
+
+//todo yiic migrate --migrationPath=user.migrations
 ini_set('dusplay_errors', 1);
 error_reporting(-1);
 // change the following paths if necessary

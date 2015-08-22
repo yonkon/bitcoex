@@ -17,12 +17,50 @@ return array(
         'application.models.*',
         'application.components.*',
         'application.vendor.ETwigViewRenderer',
+        'application.modules.user.models.*',
+        'application.modules.user.components.*',
+        'application.modules.rights.models.*',
+        'application.modules.rights.components.*',
     ),
     'modules' => array(
         'gii' => array(
             'class' => 'system.gii.GiiModule',
             'password' => 'root'
-        )
+        ),
+        'user'=>array(
+            # encrypting method (php hash function)
+            'hash' => 'md5',
+
+            # send activation email
+            'sendActivationMail' => true,
+
+            # allow access for non-activated users
+            'loginNotActiv' => false,
+
+            # activate user on registration (only sendActivationMail = false)
+            'activeAfterRegister' => false,
+
+            # automatically login from registration
+            'autoLogin' => true,
+
+            # registration path
+            'registrationUrl' => array('/user/registration'),
+
+            # recovery password path
+            'recoveryUrl' => array('/user/recovery'),
+
+            # login form path
+            'loginUrl' => array('/user/login'),
+
+            # page after login
+            'returnUrl' => array('/user/profile'),
+
+            # page after logout
+            'returnLogoutUrl' => array('/user/login'),
+        ),
+        'rights'=>array(
+            'install'=>false,
+        ),
     ),
 
     'defaultController' => 'site',
@@ -31,23 +69,29 @@ return array(
     'components' => array(
         'user' => array(
             // enable cookie-based authentication
-            'allowAutoLogin' => true,
+            'class' => 'RWebUser',
+            'allowAutoLogin'=>true,
+            'loginUrl' => array('/user/login'),
         ),
-        'db' => array(
-            'connectionString' => 'sqlite:protected/data/blog.db',
-            'tablePrefix' => 'tbl_',
+        'authManager'=>array(
+            'class'=>'RDbAuthManager',
+            'connectionID'=>'db',
+            'defaultRoles'=>array('Authenticated', 'Guest'),
         ),
+//        'db' => array(
+//            'connectionString' => 'sqlite:protected/data/blog.db',
+//            'tablePrefix' => 'tbl_',
+//        ),
         // uncomment the following to use a MySQL database
-        /*
         'db'=>array(
-            'connectionString' => 'mysql:host=localhost;dbname=blog',
+            'connectionString' => 'mysql:host=localhost;dbname=bitcoex',
             'emulatePrepare' => true,
             'username' => 'root',
             'password' => '',
             'charset' => 'utf8',
             'tablePrefix' => 'tbl_',
         ),
-        */
+
         'errorHandler' => array(
             // use 'site/error' action to display errors
             'errorAction' => 'site/error',
