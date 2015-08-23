@@ -4,6 +4,11 @@ class OrderController extends Controller
 {
 	public function actionCreate()
 	{
+		$order = Order::model();
+        $order->attributes = $_REQUEST['order'];
+        if ($order->validate()) {
+            $order->save();
+        }
 		$this->render('create');
 	}
 

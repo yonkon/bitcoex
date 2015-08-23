@@ -26,7 +26,41 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $this->render('index', array());
+        $user = null;
+        $last_order = Order::model()->find(
+            array(
+                'limit'=>1,
+                'order' => 'id desc'
+            )
+        );
+        $min_order = Order::model()->find(
+            array(
+                'condition' => 'status=0',
+                "order" => 'summ asc',
+                'limit' => 1
+            )
+        );
+        $max_order = Order::model()->find(
+            array(
+                'condition' => 'status=0',
+                "order" => 'summ desc',
+                'limit' => 1
+            )
+        );
+
+        if (Yii::app()->user->isGuest) {
+            $user = null;
+        } else {
+            $user = User::model();
+            $user->findByPk(Yii::app()->user->id);
+        }
+
+        $this->render('index', array(
+            'user'=>$user,
+            'min_order' => $min_order,
+            'max_order' => $max_order,
+            'last_order' => $last_order));
+
     }
 
     /**

@@ -11,6 +11,8 @@
  */
 class Wallet extends CActiveRecord
 {
+	const WALLET_TYPE_WMZ = 1;
+	const WALLET_TYPE_BTC = 2;
 	/**
 	 * @return string the associated database table name
 	 */
