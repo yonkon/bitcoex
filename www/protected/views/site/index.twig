@@ -41,7 +41,7 @@
                 {% if App.user.isGuest() %}<a href="{{ App.createUrl('user/login') }}">Войти</a>&nbsp;|&nbsp;
                 {% else %}<a href="{{ App.createUrl('user/logout') }}">{{ App.user.name }}</a>&nbsp;|&nbsp;
                 {% endif %}
-                <a href="#">Регистрация</a>&nbsp;|&nbsp;
+                <a href="{{ App.createUrl('user/registration') }}">Регистрация</a>&nbsp;|&nbsp;
                 <a href="#">Забыл пароль</a>
             </p>
         </div>
@@ -99,7 +99,7 @@
                     <div class="col-xs-6 np">
                         <span class="">Ваши средства:</span>
 
-                        <p class=""><a href="">0 USD</a></p>
+                        <p class=""><a href="">{{ wallets['USD'].money}} USD</a></p>
                     </div>
                     <div class="col-xs-6">
                         <span>Мин цена:</span>

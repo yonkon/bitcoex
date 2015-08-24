@@ -13,6 +13,8 @@ class Wallet extends CActiveRecord
 {
 	const WALLET_TYPE_WMZ = 1;
 	const WALLET_TYPE_BTC = 2;
+	public static $WALLET_CURRENCY_USD = array(Wallet::WALLET_TYPE_WMZ);
+	public static $WALLET_CURRENCY_BTC = array(Wallet::WALLET_TYPE_BTC);
 	/**
 	 * @return string the associated database table name
 	 */

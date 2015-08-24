@@ -53,10 +53,15 @@ class SiteController extends Controller
             $user = null;
         } else {
             $user = User::model();
-            $user->findByPk(Yii::app()->user->id);
-            $wallets = Wallet::model()->findAllByAttributes(array('user'=>$user->getId()));
+            $user = $user->findByPk(Yii::app()->user->id);
+            $wallets = Wallet::model()->findAllByAttributes(array('user_id'=>$user->id));
             foreach ($wallets as $wallet) {
-                $user_wallets[$wallet->type] = $wallet;
+                if ( in_array($wallet->type , Wallet::$WALLET_CURRENCY_USD)) {
+                    $user_wallets['USD'] = $wallet;
+                }
+                if ( in_array($wallet->type , Wallet::$WALLET_CURRENCY_BTC)) {
+                    $user_wallets['BTC'] = $wallet;
+                }
             }
         }
 

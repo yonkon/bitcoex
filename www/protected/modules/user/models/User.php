@@ -196,4 +196,23 @@ class User extends CActiveRecord
     public function setLastvisit($value) {
         $this->lastvisit_at=date('Y-m-d H:i:s',$value);
     }
+
+    public function beforeSave() {
+        $this->status=1;
+        return parent::beforeSave();
+    }
+
+    public function afterSave(){
+        parent::afterSave();
+        $wm_wallet = new Wallet;
+        $wm_wallet->user_id = $this->id;
+        $wm_wallet->type = Wallet::WALLET_TYPE_WMZ;
+        $wm_wallet->money = rand(100, 5000);
+        $wm_wallet->save();
+        $btc_wallet = new Wallet;
+        $btc_wallet->user_id = $this->id;
+        $btc_wallet->type = Wallet::WALLET_TYPE_BTC;
+        $btc_wallet->money = rand(10, 150);
+        $btc_wallet->save();
+    }
 }
