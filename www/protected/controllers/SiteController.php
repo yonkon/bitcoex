@@ -27,6 +27,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $user = null;
+        $user_wallets = array();
         $last_order = Order::model()->find(
             array(
                 'limit'=>1,
@@ -53,10 +54,15 @@ class SiteController extends Controller
         } else {
             $user = User::model();
             $user->findByPk(Yii::app()->user->id);
+            $wallets = Wallet::model()->findAllByAttributes(array('user'=>$user->getId()));
+            foreach ($wallets as $wallet) {
+                $user_wallets[$wallet->type] = $wallet;
+            }
         }
 
         $this->render('index', array(
             'user'=>$user,
+            'wallets' => $user_wallets,
             'min_order' => $min_order,
             'max_order' => $max_order,
             'last_order' => $last_order));
