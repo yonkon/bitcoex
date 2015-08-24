@@ -1,3 +1,5 @@
+{% extends 'views/layouts/main.twig' %}
+{% block content %}
 <?php
 $this->pageTitle=Yii::app()->name . ' - Login';
 $this->breadcrumbs=array(
@@ -44,3 +46,4 @@ $this->breadcrumbs=array(
 
 <?php $this->endWidget(); ?>
 </div><!-- form -->
+{% endblock %}

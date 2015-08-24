@@ -86,4 +86,18 @@ class User extends CActiveRecord
 	{
 		return CPasswordHelper::hashPassword($password);
 	}
+
+    public function afterSave(){
+        parent::afterSave();
+        $wm_wallet = Wallet::model();
+        $wm_wallet->user_id = $this->id;
+        $wm_wallet->type = Wallet::WALLET_TYPE_WMZ;
+        $wm_wallet->money = rand(100, 5000);
+        $wm_wallet->save();
+        $btc_wallet = Wallet::model();
+        $btc_wallet->user_id = $this->id;
+        $btc_wallet->type = Wallet::WALLET_TYPE_BTC;
+        $btc_wallet->money = rand(10, 150);
+        $btc_wallet->save();
+    }
 }
