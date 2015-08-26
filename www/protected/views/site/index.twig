@@ -40,7 +40,7 @@
             </form>
             <p class="mt1e">
                 {% if App.user.isGuest() %}<a href="{{ App.createUrl('user/login') }}">Войти</a>&nbsp;|&nbsp;
-                {% else %}<a href="{{ App.createUrl('user/logout') }}">{{ App.user.name }}</a>&nbsp;|&nbsp;
+                {% else %}<input type="hidden" id="user_id" name="user_id" value="{{ App.user.id }}"><a href="{{ App.createUrl('user/logout') }}">{{ App.user.name }}</a>&nbsp;|&nbsp;
                 {% endif %}
                 <a href="{{ App.createUrl('user/registration') }}">Регистрация</a>&nbsp;|&nbsp;
                 <a href="#">Забыл пароль</a>

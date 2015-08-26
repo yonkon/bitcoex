@@ -4,8 +4,12 @@ class OrderController extends Controller
 {
 	public function actionCreate()
 	{
-		$order = Order::model();
-        $order->attributes = $_REQUEST['order'];
+		$order = new Order;
+        $_REQUEST['user'] = Yii::app()->user->id;
+		$_REQUEST['rest'] = $_REQUEST['summ'];
+        $_REQUEST['date'] = time();
+		$_REQUEST['status'] = Order::STATUS_NEW;
+        $order->setAttributes($_REQUEST);
         if ($order->validate()) {
             $order->save();
         }

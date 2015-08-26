@@ -16,6 +16,8 @@
  */
 class Order extends CActiveRecord
 {
+	const STATUS_NEW = 0;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -32,7 +34,7 @@ class Order extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id, user, src_wallet, summ, price, dst_wallet, rest, date, status', 'required'),
+			array('user, src_wallet, summ, price, dst_wallet, rest, status', 'required'),
 			array('id, user, src_wallet, dst_wallet, date, status', 'numerical', 'integerOnly'=>true),
 			array('summ, price, rest', 'numerical'),
 			// The following rule is used by search().
