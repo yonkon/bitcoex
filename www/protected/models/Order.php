@@ -19,6 +19,7 @@
 class Order extends CActiveRecord
 {
 	const STATUS_NEW = 0;
+	const STATUS_CLOSED = 1;
 
 	/**
 	 * @return string the associated database table name
@@ -135,14 +136,123 @@ ORDER BY date ASC");
             return false;
         }
         foreach ($currentOrders as $ord) {
-            $transaction = new Transaction();
-            if ($ord->rest > $this->rest) {
-                $transaction->order = $this->id;
-                $transaction->src_price = $this->price;
-                $transaction->src_count = $this->rest;
-                $transaction->src_wallet = $this->src_wallet;
-                $transaction->dst_count = $this->rest / $this->price; //TODO make transacttion go. Check for correct conversion count
+            if ($this->rest == 0 ) {
+                $this->status = Order::STATUS_CLOSED;
+                $this->save();
+                break;
+            }
+            assert($this->rest > 0, "Assertion failed: Order ID#{$this->id} has a negative rest value");
+            if ($ord->rest == 0) {
+                continue;
+            }
+
+            //Две транзакции:
+            //Передача средств текущего заказа на кошелек найденного заказа
+            // и передача в обратном направлении
+            $forward_ta = new Transaction();
+            $reverse_ta = new Transaction();
+            $transaction_date = date('Y-m-d H:i:s', time() );
+            //Если предложение покрывает полностью сумму текущего заказа, то закрываем текущий заказ
+            if ($ord->restCurrencyEquivalent() >= $this->restCurrencyEquivalent()) {
+                $thisOrder = $this;
+                $thatOrder = $ord;
+            } else {
+                //Если предложение не покрывает полностью сумму текущего заказа, то закрываем предложение
+                $thisOrder = $ord;
+                $thatOrder = $this;
+            }
+
+            $forward_ta->order = $thisOrder->id;
+
+            $forward_ta->src_price = $thisOrder->price;
+            $forward_ta->dst_price = $thisOrder->price;
+
+            if ($thisOrder->isUSDSell()) {
+                $forward_ta->src_count = $thisOrder->restCurrencyEquivalent();
+                $forward_ta->dst_count = $thisOrder->restCurrencyEquivalent(); //TODO make transacttion go. Check for correct conversion count
+            } else {
+                $forward_ta->src_count = $thisOrder->restCryptoEquivalent();
+                $forward_ta->dst_count = $thisOrder->restCryptoEquivalent();
+            }
+
+            $forward_ta->src_wallet = $thisOrder->src_wallet;
+            $forward_ta->dst_wallet = $thatOrder->dst_wallet;
+            $forward_ta->date = $transaction_date;
+
+            $reverse_ta->order = $thatOrder->id;
+            $reverse_ta->src_price = $thatOrder->price;
+            $reverse_ta->dst_price = $thatOrder->price;
+
+            assert($forward_ta->src_price == $reverse_ta->dst_price &&
+                $forward_ta->dst_price == $reverse_ta->src_price &&
+                $forward_ta->src_price == $reverse_ta->src_price, 'Price equality assertion failed');
+
+            if ($thisOrder->isUSDSell()) {
+                $reverse_ta->src_count = $thisOrder->restCryptoEquivalent(); //TODO make transacttion go. Check for correct conversion count
+                $reverse_ta->dst_count = $thisOrder->restCryptoEquivalent();
+            } else {
+                $reverse_ta->src_count = $thisOrder->restCurrencyEquivalent();
+                $reverse_ta->dst_count = $thisOrder->restCurrencyEquivalent();
+            }
+
+            $reverse_ta->src_wallet = $thatOrder->src_wallet;
+            $reverse_ta->dst_wallet = $thisOrder->dst_wallet;
+            $reverse_ta->date = $transaction_date;
+
+
+            $reverse_result = $reverse_ta->validate();
+            $forward_result = $forward_ta->validate();
+
+            if ($forward_result && $reverse_result) {
+                $forward_result = $forward_ta->save();
+                $reverse_result = $reverse_ta->save();
             }
         }
+        return true;
 	}
+
+    public function restCurrencyEquivalent(){
+        if ($this->isBTCSell()) {
+            return $this->rest * $this->price;
+        } else {
+            return $this->rest;
+        }
+    }
+
+    public function restCryptoEquivalent(){
+        if ($this->isBTCSell()) {
+            return $this->rest;
+        } else {
+            return $this->rest / $this->price;
+        }
+    }
+
+    public function isBTCSell(){
+        return in_array($this->src_wallet_type, Wallet::$WALLET_CURRENCY_BTC);
+    }
+
+    public function isBTCBuy(){
+        return in_array($this->dst_wallet_type, Wallet::$WALLET_CURRENCY_BTC);
+    }
+
+    public function isUSDSell(){
+        return in_array($this->src_wallet_type, Wallet::$WALLET_CURRENCY_USD);
+    }
+
+    public function isUSDBuy(){
+        return in_array($this->dst_wallet_type, Wallet::$WALLET_CURRENCY_USD);
+    }
+
+    public function setAttributes($values,$safeOnly=true) {
+        parent::setAttributes($values,$safeOnly=true);
+        if (empty ($this->src_wallet_type) && ~empty ($this->src_wallet)) {
+            $src_wallet = Wallet::model()->findByPk($this->src_wallet);
+            $this->src_wallet_type = $src_wallet->type;
+        }
+        if (empty ($this->dst_wallet_type) && ~empty ($this->dst_wallet)) {
+            $dst_wallet = Wallet::model()->findByPk($this->dst_wallet);
+            $this->dst_wallet_type = $dst_wallet->type;
+        }
+    }
+
 }

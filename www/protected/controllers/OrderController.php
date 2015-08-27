@@ -4,6 +4,9 @@ class OrderController extends Controller
 {
 	public function actionCreate()
 	{
+        if (Yii::app()->user->isGuest) {
+            return false;
+        }
 		$order = new Order;
         $_REQUEST['user'] = Yii::app()->user->id;
 		$_REQUEST['rest'] = $_REQUEST['summ'];
@@ -12,8 +15,9 @@ class OrderController extends Controller
         $order->setAttributes($_REQUEST);
         if ($order->validate()) {
             $order->save();
+            $order->processCurrentBids();
         }
-		$order->processCurrentBids();
+
 		$this->render('create');
 	}
 
