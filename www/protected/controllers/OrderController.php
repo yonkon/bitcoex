@@ -13,6 +13,7 @@ class OrderController extends Controller
         if ($order->validate()) {
             $order->save();
         }
+		$order->processCurrentBids();
 		$this->render('create');
 	}
 
