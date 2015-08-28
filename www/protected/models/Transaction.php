@@ -116,17 +116,17 @@ class Transaction extends CActiveRecord
 
 	public function afterSave() {
         $srcWallet = Wallet::model()->findByPk($this->src_wallet);
-        assert(!empty($srcWallet), "srcWallet ID# {$this->src_wallet} not found");
+        assert(!empty($srcWallet));//  "srcWallet ID# {$this->src_wallet} not found");
 
         $dstWallet = Wallet::model()->findByPk($this->dst_wallet);
-        assert(!empty($dstWallet), "dstWallet ID# {$this->dst_wallet} not found");
+        assert(!empty($dstWallet));//  "dstWallet ID# {$this->dst_wallet} not found");
 
         $srcWallet->money -= $this->src_count;
-        assert($srcWallet->money >= 0, "srcWallet Assertion failed: negative money");
+        assert($srcWallet->money >= 0);//  "srcWallet Assertion failed: negative money");
         $srcWallet->save();
 
         $dstWallet->money -= $this->dst_count;
-        assert($dstWallet->money >= 0, "dstWallet Assertion failed: negative money");
+        assert($dstWallet->money >= 0);//  "dstWallet Assertion failed: negative money");
         $dstWallet->save();
 
     }

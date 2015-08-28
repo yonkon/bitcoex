@@ -141,7 +141,7 @@ ORDER BY date ASC");
                 $this->save();
                 break;
             }
-            assert($this->rest > 0, "Assertion failed: Order ID#{$this->id} has a negative rest value");
+            assert($this->rest > 0);//, "Assertion failed: Order ID#{$this->id} has a negative rest value");
             if ($ord->rest == 0) {
                 continue;
             }
@@ -185,7 +185,7 @@ ORDER BY date ASC");
 
             assert($forward_ta->src_price == $reverse_ta->dst_price &&
                 $forward_ta->dst_price == $reverse_ta->src_price &&
-                $forward_ta->src_price == $reverse_ta->src_price, 'Price equality assertion failed');
+                $forward_ta->src_price == $reverse_ta->src_price);//, 'Price equality assertion failed');
 
             if ($thisOrder->isUSDSell()) {
                 $reverse_ta->src_count = $thisOrder->restCryptoEquivalent(); //TODO make transacttion go. Check for correct conversion count
@@ -206,6 +206,19 @@ ORDER BY date ASC");
             if ($forward_result && $reverse_result) {
                 $forward_result = $forward_ta->save();
                 $reverse_result = $reverse_ta->save();
+                if ($forward_result && $reverse_result) {
+
+                    $thatOrder->rest -= $thisOrder->rest;
+                    if($thatOrder->rest == 0) {
+                        $thatOrder->status = Order::STATUS_CLOSED;
+                    }
+                    $thatOrder->save();
+
+                    $thisOrder->rest = 0;
+                    $thisOrder->status = Order::STATUS_CLOSED;
+                    $thisOrder->save();
+
+                }
             }
         }
         return true;
@@ -245,11 +258,11 @@ ORDER BY date ASC");
 
     public function setAttributes($values,$safeOnly=true) {
         parent::setAttributes($values,$safeOnly=true);
-        if (empty ($this->src_wallet_type) && ~empty ($this->src_wallet)) {
+        if (empty ($this->src_wallet_type) && !empty ($this->src_wallet)) {
             $src_wallet = Wallet::model()->findByPk($this->src_wallet);
             $this->src_wallet_type = $src_wallet->type;
         }
-        if (empty ($this->dst_wallet_type) && ~empty ($this->dst_wallet)) {
+        if (empty ($this->dst_wallet_type) && !empty ($this->dst_wallet)) {
             $dst_wallet = Wallet::model()->findByPk($this->dst_wallet);
             $this->dst_wallet_type = $dst_wallet->type;
         }

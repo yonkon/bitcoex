@@ -204,6 +204,10 @@ class User extends CActiveRecord
 
     public function afterSave(){
         parent::afterSave();
+        $uwallet = Wallet::model()->find("user_id={$this->id}");
+        if (!empty($uwallet)) {
+            return;
+        }
         $wm_wallet = new Wallet;
         $wm_wallet->user_id = $this->id;
         $wm_wallet->type = Wallet::WALLET_TYPE_WMZ;

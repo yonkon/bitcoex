@@ -21,6 +21,7 @@ $(document).ready(
         $('#buy_process').click(
             function(e) {
                 var $buy_form_form = $('#buy_form form');
+
                 buy_count = $('#buy_count').val();
                 buy_price = $('#buy_price').val();
                 commission_ratio = 0.01;
@@ -38,7 +39,6 @@ $(document).ready(
                     data : form_data
                 }).success(function(data){
                     console.log(data);
-                    alert('ok');
                 });
                 e.preventDefault();
                 e.stopPropagation();
@@ -62,7 +62,27 @@ $(document).ready(
         );
         $('#sell_process').click(
             function(e) {
-
+                var $sell_form_form = $('#sell_form form');
+                sell_count = $('#sell_count').val();
+                sell_price = $('#sell_price').val();
+                commission_ratio = 0.01;
+                commission = commission_ratio*sell_count;
+                sell_total_usr = parseFloat(sell_count) - commission;
+                sell_total = sell_total_usr * parseFloat(sell_price);
+                $('#sell_total').text(sell_total);
+                $('#sell_commission').text(commission);
+                var form_data = $sell_form_form.serializeArray();
+                form_data['user'] = uid;
+                //$buy_form_form.submit();
+                $.ajax({
+                    url : $sell_form_form.attr('action'),
+                    type : 'post',
+                    data : form_data
+                }).success(function(data){
+                    console.log(data);
+                });
+                e.preventDefault();
+                e.stopPropagation();
             }
         );
     }
