@@ -48,6 +48,19 @@ class SiteController extends Controller
                 'limit' => 1
             )
         );
+        $active_orders = Order::model()->findAll(array(
+            'condition' => 'status=0',
+//            "order" => 'summ asc',
+//            'limit' => 1
+        ));
+        $orders = array();
+        foreach ($active_orders as $order) {
+            if ($order->isBTCSell()) {
+                $orders['sell'][] = $order;
+            } else {
+                $orders['buy'][] = $order;
+            }
+        }
 
         if (Yii::app()->user->isGuest) {
             $user = null;
@@ -70,7 +83,10 @@ class SiteController extends Controller
             'wallets' => $user_wallets,
             'min_order' => $min_order,
             'max_order' => $max_order,
-            'last_order' => $last_order));
+            'last_order' => $last_order,
+            'orders' => $orders
+            )
+        );
 
     }
 
