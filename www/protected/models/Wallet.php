@@ -102,4 +102,11 @@ class Wallet extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	public function isBTCWallet() {
+        return in_array($this->type, Wallet::$WALLET_CURRENCY_BTC);
+    }
+	public function isUSDWallet() {
+        return in_array($this->type, Wallet::$WALLET_CURRENCY_USD);
+    }
 }

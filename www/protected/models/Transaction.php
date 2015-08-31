@@ -114,7 +114,10 @@ class Transaction extends CActiveRecord
 		return parent::model($className);
 	}
 
-	public function afterSave() {
+    /**
+     *@return Wallet
+     */
+    public function afterSave() {
         $srcWallet = Wallet::model()->findByPk($this->src_wallet);
         assert(!empty($srcWallet));//  "srcWallet ID# {$this->src_wallet} not found");
 
@@ -129,5 +132,42 @@ class Transaction extends CActiveRecord
         assert($dstWallet->money >= 0);//  "dstWallet Assertion failed: negative money");
         $dstWallet->save();
 
+    }
+
+    /**
+     *@return Wallet
+     */
+    public function getSrcWallet() {
+        return  Wallet::model()->findByPk($this->src_wallet);
+
+    }
+    public function getDstWallet() {
+        return  Wallet::model()->findByPk($this->dst_wallet);
+    }
+
+	public function isBTCSell() {
+        $wallet = $this->getSrcWallet();
+		return $wallet->isBTCWallet();
+	}
+
+    public function isBTCBuy() {
+        $wallet = $this->getSrcWallet();
+        return $wallet->isUSDWallet();
+    }
+
+    public function srcBTCEquivalent() {
+        if ($this->isBTCSell()) {
+            return $this->src_count;
+        } else {
+            return $this->src_count/$this->src_price;
+        }
+    }
+
+    public function srcUSDEquivalent() {
+        if ($this->isBTCBuy()) {
+            return $this->src_count;
+        } else {
+            return $this->src_count*$this->src_price;
+        }
     }
 }

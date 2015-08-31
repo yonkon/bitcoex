@@ -103,8 +103,8 @@
 
         <div class="col-xs-6 mb1e">
             <div class="border1 col-xs-12">
-                <h5>Ордера на продажу</h5>
-                <p class="flr">Всего 110000 BTC</p>
+                <h5>Ордера на продажу BTC</h5>
+                <p class="flr">Всего {{ orders.total.sell}} BTC</p>
                 <div style="overflow:auto; max-height: 500px;" class="col-xs-12 np">
                 <table class="table" style="width: 100%">
                     <tbody>
@@ -113,7 +113,7 @@
                         <th>BTC</th>
                         <th>USD</th>
                     </tr>
-                    {% for no,order in orders  %}
+                    {% for no,order in orders.sell  %}
                         {#TODO find order.attributes expression#}
                         <tr>
                             <td>{{  order.price }}</td>
@@ -128,8 +128,8 @@
         </div>
         <div class="col-xs-6 mb1e">
             <div class="border1 col-xs-12">
-                <h5>Ордера на продажу</h5>
-                <p class="flr">Всего 110000 BTC</p>
+                <h5>Ордера на покупку BTC</h5>
+                <p class="flr">Всего {{ orders.total.buy }} BTC</p>
                 <div style="overflow:auto; max-height: 500px;" class="col-xs-12 np">
                     <table class="table" style="width: 100%">
                         <tbody>
@@ -138,141 +138,14 @@
                             <th>BTC</th>
                             <th>USD</th>
                         </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
-                        <tr>
-                            <td>255</td>
-                            <td>7</td>
-                            <td>2000</td>
-                        </tr>
+                        {% for no,order in orders.buy %}
+                            {#TODO find order.attributes expression#}
+                            <tr>
+                                <td>{{  order.price }}</td>
+                                <td>{{  order.rest }}</td>
+                                <td>{{  order.restCurrencyEquivalent }}</td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -295,270 +168,15 @@
                         <th>Кол-во (BTC)</th>
                         <th>Всего (USD)</th>
                     </tr>
-                    <tr>
-                        <td><span>18.08.15 03:47</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.047<span style="color:#868686">7449</span> BTC</td>
-                        <td>12.179<span style="color:#868686">72399</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="5 мин. назад">18.08.15 03:45</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.091<span style="color:#868686">3688</span> BTC</td>
-                        <td>23.299<span style="color:#868686">044</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="5 мин. назад">18.08.15 03:45</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.078<span style="color:#868686">2912</span> BTC</td>
-                        <td>19.964<span style="color:#868686">256</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.071<span style="color:#868686">085</span> BTC</td>
-                        <td>18.133<span style="color:#868686">7835</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.028<span style="color:#868686">915</span> BTC</td>
-                        <td>7.373<span style="color:#868686">325</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.301 BTC</td>
-                        <td>76.755 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.72 BTC</td>
-                        <td>183.6 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.912 BTC</td>
-                        <td>232.651<span style="color:#868686">2</span> USD</td>
-                    </tr>
-
-                    <tr>
-                        <td><span title="12 мин. назад">18.08.15 03:38</span></td>
-                        <td><b style="color:red">Sell</b></td>
-                        <td>255 USD</td>
-                        <td>0.999<span style="color:#868686">913</span> BTC</td>
-                        <td>254.977<span style="color:#868686">815</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="5 мин. назад">18.08.15 03:45</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.078<span style="color:#868686">2912</span> BTC</td>
-                        <td>19.964<span style="color:#868686">256</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.071<span style="color:#868686">085</span> BTC</td>
-                        <td>18.133<span style="color:#868686">7835</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.028<span style="color:#868686">915</span> BTC</td>
-                        <td>7.373<span style="color:#868686">325</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.301 BTC</td>
-                        <td>76.755 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.72 BTC</td>
-                        <td>183.6 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.912 BTC</td>
-                        <td>232.651<span style="color:#868686">2</span> USD</td>
-                    </tr>
-
-                    <tr>
-                        <td><span title="12 мин. назад">18.08.15 03:38</span></td>
-                        <td><b style="color:red">Sell</b></td>
-                        <td>255 USD</td>
-                        <td>0.999<span style="color:#868686">913</span> BTC</td>
-                        <td>254.977<span style="color:#868686">815</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="5 мин. назад">18.08.15 03:45</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.078<span style="color:#868686">2912</span> BTC</td>
-                        <td>19.964<span style="color:#868686">256</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.071<span style="color:#868686">085</span> BTC</td>
-                        <td>18.133<span style="color:#868686">7835</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.028<span style="color:#868686">915</span> BTC</td>
-                        <td>7.373<span style="color:#868686">325</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.301 BTC</td>
-                        <td>76.755 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.72 BTC</td>
-                        <td>183.6 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.912 BTC</td>
-                        <td>232.651<span style="color:#868686">2</span> USD</td>
-                    </tr>
-
-                    <tr>
-                        <td><span title="12 мин. назад">18.08.15 03:38</span></td>
-                        <td><b style="color:red">Sell</b></td>
-                        <td>255 USD</td>
-                        <td>0.999<span style="color:#868686">913</span> BTC</td>
-                        <td>254.977<span style="color:#868686">815</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="5 мин. назад">18.08.15 03:45</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.078<span style="color:#868686">2912</span> BTC</td>
-                        <td>19.964<span style="color:#868686">256</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.071<span style="color:#868686">085</span> BTC</td>
-                        <td>18.133<span style="color:#868686">7835</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.028<span style="color:#868686">915</span> BTC</td>
-                        <td>7.373<span style="color:#868686">325</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.301 BTC</td>
-                        <td>76.755 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.72 BTC</td>
-                        <td>183.6 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.912 BTC</td>
-                        <td>232.651<span style="color:#868686">2</span> USD</td>
-                    </tr>
-
-                    <tr>
-                        <td><span title="12 мин. назад">18.08.15 03:38</span></td>
-                        <td><b style="color:red">Sell</b></td>
-                        <td>255 USD</td>
-                        <td>0.999<span style="color:#868686">913</span> BTC</td>
-                        <td>254.977<span style="color:#868686">815</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="5 мин. назад">18.08.15 03:45</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.078<span style="color:#868686">2912</span> BTC</td>
-                        <td>19.964<span style="color:#868686">256</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.071<span style="color:#868686">085</span> BTC</td>
-                        <td>18.133<span style="color:#868686">7835</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.028<span style="color:#868686">915</span> BTC</td>
-                        <td>7.373<span style="color:#868686">325</span> USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.301 BTC</td>
-                        <td>76.755 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255 USD</td>
-                        <td>0.72 BTC</td>
-                        <td>183.6 USD</td>
-                    </tr>
-                    <tr>
-                        <td><span title="6 мин. назад">18.08.15 03:44</span></td>
-                        <td><b style="color:green">Buy</b></td>
-                        <td>255.1 USD</td>
-                        <td>0.912 BTC</td>
-                        <td>232.651<span style="color:#868686">2</span> USD</td>
-                    </tr>
-
-                    <tr>
-                        <td><span title="12 мин. назад">18.08.15 03:38</span></td>
-                        <td><b style="color:red">Sell</b></td>
-                        <td>255 USD</td>
-                        <td>0.999<span style="color:#868686">913</span> BTC</td>
-                        <td>254.977<span style="color:#868686">815</span> USD</td>
-                    </tr>
+                    {% for tr_id,transaction in transactions %}
+                        <tr>
+                            <td><span>{{ transaction.date }}</span></td>
+                            <td><b style="color:{% if transaction.isBTCBuy() %}green{% else %}red{% endif %}">{% if transaction.isBTCBuy() %}Покупка{% else %}Продажа{% endif %}</b></td>
+                            <td>{{ transaction.src_price }}</td>
+                            <td>{{ transaction.srcBTCEquivalent() }} BTC</td>
+                            <td>{{ transaction.srcUSDEquivalent() }} USD</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
