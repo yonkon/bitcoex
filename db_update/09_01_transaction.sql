@@ -1,0 +1,1 @@
+ALTER TABLE  `tbl_transaction` ADD  `order` INT NOT NULL

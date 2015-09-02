@@ -38,6 +38,7 @@ $(document).ready(
                     type : 'post',
                     data : form_data
                 }).success(function(data){
+                    window.location.reload();
                     console.log(data);
                 });
                 e.preventDefault();
@@ -79,6 +80,7 @@ $(document).ready(
                     type : 'post',
                     data : form_data
                 }).success(function(data){
+                    window.location.reload();
                     console.log(data);
                 });
                 e.preventDefault();

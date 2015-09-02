@@ -130,7 +130,9 @@ class Order extends CActiveRecord
             "SELECT * FROM {$this->tableName()}
 WHERE dst_wallet_type={$this->src_wallet_type} AND
 price={$this->price} AND
-status={$this->status}
+status={$this->status} AND
+src_wallet != {$this->dst_wallet} AND
+dst_wallet != {$this->src_wallet}
 ORDER BY date ASC");
         if (empty($currentOrders)) {
             return false;
@@ -225,6 +227,8 @@ ORDER BY date ASC");
 	}
 
     public function restCurrencyEquivalent(){
+        return $this->rest * $this->price;
+
         if ($this->isBTCSell()) {
             return $this->rest * $this->price;
         } else {
@@ -233,6 +237,8 @@ ORDER BY date ASC");
     }
 
     public function restCryptoEquivalent(){
+        return $this->rest;
+
         if ($this->isBTCSell()) {
             return $this->rest;
         } else {
@@ -256,6 +262,28 @@ ORDER BY date ASC");
         return in_array($this->dst_wallet_type, Wallet::$WALLET_CURRENCY_USD);
     }
 
+    /**
+     * @return Wallet|null
+     */
+    public function getUSDWallet() {
+        if($this->isBTCSell()) {
+            return Wallet::model()->findByPk($this->src_wallet);
+        } else {
+            return Wallet::model()->findByPk($this->dst_wallet);
+        }
+    }
+
+    /**
+     * @return Wallet|null
+     */
+    public function getBTCWallet() {
+        if($this->isBTCBuy()) {
+            return Wallet::model()->findByPk($this->src_wallet);
+        } else {
+            return Wallet::model()->findByPk($this->dst_wallet);
+        }
+    }
+
     public function setAttributes($values,$safeOnly=true) {
         parent::setAttributes($values,$safeOnly=true);
         if (empty ($this->src_wallet_type) && !empty ($this->src_wallet)) {
@@ -266,6 +294,13 @@ ORDER BY date ASC");
             $dst_wallet = Wallet::model()->findByPk($this->dst_wallet);
             $this->dst_wallet_type = $dst_wallet->type;
         }
+    }
+
+    public function validate($attributes=null, $clearErrors=true){
+        $db_res = parent::validate($attributes, $clearErrors);
+        return $db_res;
+        //todo check if user has enough money for ordering
+        if ($this->restCurrencyEquivalent() > $this->getUSDWallet()->money  ) {}
     }
 
 }
