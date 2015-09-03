@@ -135,7 +135,9 @@ class Order extends CActiveRecord
             "SELECT * FROM {$this->tableName()}
 WHERE dst_wallet_type={$this->src_wallet_type} AND
 price={$this->price} AND
-status={$this->status}
+status={$this->status} AND
+src_wallet != {$this->dst_wallet} AND
+dst_wallet != {$this->src_wallet}
 ORDER BY date ASC");
         if (empty($currentOrders)) {
             return false;
@@ -263,6 +265,28 @@ ORDER BY date ASC");
 
     public function isUSDBuy(){
         return in_array($this->dst_wallet_type, Wallet::$WALLET_CURRENCY_USD);
+    }
+
+    /**
+     * @return Wallet|null
+     */
+    public function getUSDWallet() {
+        if($this->isBTCSell()) {
+            return Wallet::model()->findByPk($this->src_wallet);
+        } else {
+            return Wallet::model()->findByPk($this->dst_wallet);
+        }
+    }
+
+    /**
+     * @return Wallet|null
+     */
+    public function getBTCWallet() {
+        if($this->isBTCBuy()) {
+            return Wallet::model()->findByPk($this->src_wallet);
+        } else {
+            return Wallet::model()->findByPk($this->dst_wallet);
+        }
     }
 
     public function setAttributes($values,$safeOnly=true) {

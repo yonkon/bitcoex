@@ -117,21 +117,39 @@ class Transaction extends CActiveRecord
     /**
      *@return Wallet
      */
-    public function afterSave() {
+    public function beforeSave() {
+		$res = parent::beforeSave();
         $srcWallet = Wallet::model()->findByPk($this->src_wallet);
-        assert(!empty($srcWallet));//  "srcWallet ID# {$this->src_wallet} not found");
+        if (empty($srcWallet)) {
+            $this->addError('src_wallet', "srcWallet ID# {$this->src_wallet} not found");
+        }
 
         $dstWallet = Wallet::model()->findByPk($this->dst_wallet);
-        assert(!empty($dstWallet));//  "dstWallet ID# {$this->dst_wallet} not found");
+        if(empty($dstWallet)) {
+            $this->addError('src_wallet', "dstWallet ID# {$this->dst_wallet} not found");
+        }
 
+        if($srcWallet->money < $this->src_count) {
+            $this->addError('src_wallet', "srctWallet ID# {$this->dst_wallet} lacks funds for order ID# {$this->order} ");
+        }
         $srcWallet->money -= $this->src_count;
-        assert($srcWallet->money >= 0);//  "srcWallet Assertion failed: negative money");
-        $srcWallet->save();
+        $dstWallet->money += $this->dst_count;
 
-        $dstWallet->money -= $this->dst_count;
-        assert($dstWallet->money >= 0);//  "dstWallet Assertion failed: negative money");
-        $dstWallet->save();
-
+        if ($this->hasErrors()) {
+            return false;
+        }
+        if ( !$srcWallet->validate() || !$srcWallet->save() ) {
+            $wErrors = join("\n", $srcWallet->getErrors() );
+            $this->addError('src_wallet', "Error saving srcWallet ID# {$this->src_wallet}\n {$wErrors}");
+        }
+         if ($this->hasErrors() ) {
+             return false;
+         }
+        if ( !$dstWallet->validate() || $dstWallet->save() ) {
+            $wErrors = join("\n", $dstWallet->getErrors() );
+            $this->addError('dst_wallet', "Error saving dstWallet ID# {$this->dst_wallet}\n {$wErrors}");
+        }
+        return !$this->hasErrors();
     }
 
     /**
