@@ -42,7 +42,7 @@ class Order extends CActiveRecord
 			array('user, src_wallet, summ, price, dst_wallet, rest, status', 'required'),
 			array('id, user, src_wallet, src_wallet_type, dst_wallet, dst_wallet_type, date, status', 'numerical', 'integerOnly'=>true),
 			array('summ, price, rest', 'numerical'),
-			array('summ, price, rest', 'compare', 'operator'=>'>', 'compareValue'=>0),
+			array('summ, price, rest', 'compare', 'operator'=>'>=', 'compareValue'=>0),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, user, src_wallet, src_wallet_type, summ, price, dst_wallet, dst_wallet_type, rest, date, status', 'safe', 'on'=>'search'),
@@ -212,7 +212,7 @@ ORDER BY date ASC");
                 $forward_result = $forward_ta->save();
                 $reverse_result = $reverse_ta->save();
                 if ($forward_result && $reverse_result) {
-
+                    //TODO check order rest change
                     $thatOrder->rest -= $thisOrder->rest;
                     if($thatOrder->rest == 0) {
                         $thatOrder->status = Order::STATUS_CLOSED;
