@@ -25,7 +25,29 @@ class LoginController extends Controller
 				}
 			}
 			// display the login form
-			$this->render('/user/login',array('model'=>$model));
+			$form = (new CForm(array(
+				'elements'=>array(
+					'username'=>array(
+						'type'=>'text',
+						'maxlength'=>32,
+					),
+					'password'=>array(
+						'type'=>'password',
+						'maxlength'=>32,
+					),
+					'rememberMe'=>array(
+						'type'=>'checkbox',
+					)
+				),
+
+				'buttons'=>array(
+					'login'=>array(
+						'type'=>'submit',
+						'label'=>'Login',
+					),
+				),
+			), $model));
+			$this->render('/user/login',array('model'=>$model, 'form' => $form));
 		} else
 			$this->redirect(Yii::app()->controller->module->returnUrl);
 	}

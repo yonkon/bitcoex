@@ -1,0 +1,101 @@
+{% extends 'views/layouts/main.twig' %}
+
+{% block head %}
+	{{ parent() }}
+	<script type="text/javascript" src="/js/jquery.jplot/jquery.js"></script>
+	<!--[if lt IE 9]>
+	<script language="javascript" type="text/javascript" src="/js/jquery.jplot/excanvas.js"></script><![endif]-->
+{% endblock %}
+
+{% block body_close %}
+	{{ parent() }}
+{% endblock %}
+
+{% block header %}
+	{#<div class="logo container np">#}
+	<div class="col-xs-12 logo-div ">
+		<div class="col-xs-2 logo-img">
+			<img src="img/logo.png" class="">
+		</div>
+		<div class="col-xs-7">
+			<p class="m1e"> Last Price: <b>279.568 USD</b> Low: <b>277 USD</b> High: <b>282.9869 USD</b></p>
+
+			<p class="m1e"> Volume: <b>5275 BTC / 1476257 USD</b> Server Time: <b>04.08.15 02:34</b></p>
+		</div>
+		<div class="col-xs-3">
+			<form>
+				<input type="text" name="email" class="mt1e" placeholder="E-mail">
+				<input type="password" name="email" class="mt1e" placeholder="Пароль">
+			</form>
+			<p class="mt1e">
+				{% if App.user.isGuest() %}<a href="{{ App.createUrl('user/login') }}">Войти</a>&nbsp|&nbsp
+				{% else %}<input type="hidden" id="user_id" name="user_id" value="{{ App.user.id }}"><a href="{{ App.createUrl('user/logout') }}">{{ App.user.name }}</a>&nbsp|&nbsp
+				{% endif %}
+				<a href="{{ App.createUrl('user/registration') }}">Регистрация</a>&nbsp|&nbsp
+				<a href="#">Забыл пароль</a>
+			</p>
+		</div>
+	</div>
+	{#</div>#}
+{% endblock %}
+
+{% block header_menu %}
+	<div class="col-xs-12 menu1 np">
+		<menu class="col-xs-12 np main-menu">
+			<li><a href="#">Торги</a></li>
+			<li><a href="#">Новости</a></li>
+			<li><a href="#">Правила</a></li>
+			<li><a href="#">FuQ</a></li>
+			<li><a href="/gii">Gii</a></li>
+		</menu>
+	</div>
+{% endblock %}
+
+{% block content %}
+    {% autoescape false %}
+	<div class="col-xs-8">
+        {% if App.user.hasFlash('loginMessage') %}
+            <div class="success">
+                {{ App.user.getFlash('loginMessage') }}
+            </div>
+        {% endif %}
+        <p>Please fill out the following form with your login credentials:</p>
+
+        <div class="form">
+            {{ html.beginForm() }}
+
+            <p class="note">Fields with <span class="required">*</span> are required.</p>
+
+            {{ html.errorSummary(model) }}
+
+            <div class="row">
+                {{ html.activeLabelEx(model,'username') }}
+                {{ html.activeTextField(model,'username') }}
+            </div>
+
+           <div class="row">
+                {{ html.activeLabelEx(model,'password') }}
+                {{ html.activePasswordField(model,'password') }}
+            </div>
+                        <div class="row">
+                            <p class="hint">
+                                {{ html.link(UserModule.t("Register"),App.getModule('user').registrationUrl)}} | {{  html.link(UserModule.t("Lost Password?"),App.getModule('user').recoveryUrl) }}
+                            </p>
+                        </div>
+
+                        <div class="row rememberMe">
+                            {{ html.activeCheckBox(model,'rememberMe') }}
+                            {{ html.activeLabelEx(model,'rememberMe') }}
+                        </div>
+
+                        <div class="row submit">
+                            {{ html.submitButton(UserModule.t("Login")) }}
+                        </div>
+            {{ html.endForm() }}
+        </div><!-- form -->
+	</div>
+	<div class="col-xs-4">
+		{#{{ dump(dataProvider) }}#}
+	</div>
+{% endautoescape %}
+{% endblock %}

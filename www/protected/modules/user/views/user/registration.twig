@@ -1,0 +1,157 @@
+{% extends 'views/layouts/main.twig' %}
+
+{% block head %}
+	{{ parent() }}
+	<script type="text/javascript" src="/js/jquery.jplot/jquery.js"></script>
+	<!--[if lt IE 9]>
+	<script language="javascript" type="text/javascript" src="/js/jquery.jplot/excanvas.js"></script><![endif]-->
+{% endblock %}
+
+{% block body_close %}
+	{{ parent() }}
+{% endblock %}
+
+{% block header %}
+	{#<div class="logo container np">#}
+	<div class="col-xs-12 logo-div ">
+		<div class="col-xs-2 logo-img">
+			<img src="img/logo.png" class="">
+		</div>
+		<div class="col-xs-7">
+			<p class="m1e"> Last Price: <b>279.568 USD</b> Low: <b>277 USD</b> High: <b>282.9869 USD</b></p>
+
+			<p class="m1e"> Volume: <b>5275 BTC / 1476257 USD</b> Server Time: <b>04.08.15 02:34</b></p>
+		</div>
+		<div class="col-xs-3">
+			<form>
+				<input type="text" name="email" class="mt1e" placeholder="E-mail">
+				<input type="password" name="email" class="mt1e" placeholder="Пароль">
+			</form>
+			<p class="mt1e">
+				{% if App.user.isGuest() %}<a href="{{ App.createUrl('user/login') }}">Войти</a>&nbsp|&nbsp
+				{% else %}<input type="hidden" id="user_id" name="user_id" value="{{ App.user.id }}"><a href="{{ App.createUrl('user/logout') }}">{{ App.user.name }}</a>&nbsp|&nbsp
+				{% endif %}
+				<a href="{{ App.createUrl('user/registration') }}">Регистрация</a>&nbsp|&nbsp
+				<a href="#">Забыл пароль</a>
+			</p>
+		</div>
+	</div>
+	{#</div>#}
+{% endblock %}
+
+{% block header_menu %}
+	<div class="col-xs-12 menu1 np">
+		<menu class="col-xs-12 np main-menu">
+			<li><a href="#">Торги</a></li>
+			<li><a href="#">Новости</a></li>
+			<li><a href="#">Правила</a></li>
+			<li><a href="#">FuQ</a></li>
+			<li><a href="/gii">Gii</a></li>
+		</menu>
+	</div>
+{% endblock %}
+
+{% block content %}
+	{% autoescape false %}
+
+		<h1>{{ UserModule::t("Registration") }}</h1>
+
+		{%  if(App.user.hasFlash('registration')) %}
+		<div class="success">
+			{{ App.user.getFlash('registration') }}
+		</div>
+		{% else %}
+
+		<div class="form">
+			<?php $form=$this.beginWidget('UActiveForm', array(
+			'id'=>'registration-form',
+			'enableAjaxValidation'=>true,
+			'disableAjaxValidationAttributes'=>array('RegistrationForm_verifyCode'),
+			'clientOptions'=>array(
+			'validateOnSubmit'=>true,
+			),
+			'htmlOptions' => array('enctype'=>'multipart/form-data'),
+			)); ?>
+
+			<p class="note">{{ UserModule::t('Fields with <span class="required">*</span> are required.') }}</p>
+
+			{{ form.errorSummary(array(model,$profile)) }}
+
+			<div class="row">
+				{{ form.labelEx(model,'username') }}
+				{{ form.textField(model,'username') }}
+				{{ form.error(model,'username') }}
+			</div>
+
+			<div class="row">
+				{{ form.labelEx(model,'password') }}
+				{{ form.passwordField($model,'password') }}
+				{{ form.error($model,'password') }}
+				<p class="hint">
+					{{ UserModule::t("Minimal password length 4 symbols.") }}
+				</p>
+			</div>
+
+			<div class="row">
+				{{ form.labelEx(model,'verifyPassword') }}
+				{{ form.passwordField(model,'verifyPassword') }}
+				{{  form.error(model,'verifyPassword')}}
+			</div>
+
+			<div class="row">
+				{{ form.labelEx(model,'email') }}
+				{{ form.textField(model,'email') }}
+				{{ form.error(model,'email') }}
+			</div>
+
+			<?php
+		$profileFields=$profile.getFields();
+			if ($profileFields) {
+			foreach($profileFields as $field) {
+			?>
+			<div class="row">
+				<?php echo $form.labelEx($profile,$field.varname); ?>
+				<?php
+		if ($widgetEdit = $field.widgetEdit($profile)) {
+				echo $widgetEdit;
+				} elseif ($field.range) {
+				echo $form.dropDownList($profile,$field.varname,Profile::range($field.range));
+				} elseif ($field.field_type=="TEXT") {
+				echo$form.textArea($profile,$field.varname,array('rows'=>6, 'cols'=>50));
+				} else {
+				echo $form.textField($profile,$field.varname,array('size'=>60,'maxlength'=>(($field.field_size)?$field.field_size:255)));
+				}
+				?>
+				<?php echo $form.error($profile,$field.varname); ?>
+			</div>
+			<?php
+			}
+		}
+?>
+			<?php if (UserModule::doCaptcha('registration')): ?>
+			<div class="row">
+				<?php echo $form.labelEx($model,'verifyCode'); ?>
+
+				<?php $this.widget('CCaptcha'); ?>
+				<?php echo $form.textField($model,'verifyCode'); ?>
+				<?php echo $form.error($model,'verifyCode'); ?>
+
+				<p class="hint"><?php echo UserModule::t("Please enter the letters as they are shown in the image above."); ?>
+					<br/><?php echo UserModule::t("Letters are not case-sensitive."); ?></p>
+			</div>
+			<?php endif; ?>
+
+			<div class="row submit">
+				{{ Html::submitButton(UserModule::t("Register")) }}
+			</div>
+
+			<?php $this.endWidget(); ?>
+		</div><!-- form -->
+		<?php endif; ?>
+	{% endautoescape %}
+{% endblock %}
+
+
+
+
+
