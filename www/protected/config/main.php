@@ -87,7 +87,7 @@ return array(
             'connectionString' => 'mysql:host=localhost;dbname=bitcoex',
             'emulatePrepare' => true,
             'username' => 'root',
-            'password' => '103103103',
+            'password' => '',
             'charset' => 'utf8',
             'tablePrefix' => 'tbl_',
         ),

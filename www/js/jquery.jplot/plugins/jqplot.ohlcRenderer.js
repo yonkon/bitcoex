@@ -172,6 +172,7 @@
         var o;
         var r = this.renderer;
         var opts = (options != undefined) ? options : {};
+        var volumeFillStyle = (opts.volumeFillStyle != undefined) ? opts.volumeFillStyle : 'rgba(100, 200, 100, 0.2)';
         var shadow = (opts.shadow != undefined) ? opts.shadow : this.shadow;
         var fill = (opts.fill != undefined) ? opts.fill : this.fill;
         var fillAndStroke = (opts.fillAndStroke != undefined) ? opts.fillAndStroke : this.fillAndStroke;
@@ -179,7 +180,7 @@
         r.tickLength = (opts.tickLength != undefined) ? opts.tickLength : r.tickLength;
         ctx.save();
         if (this.show) {
-            var x, open, hi, low, close;
+            var x, open, hi, low, close, volume, maxVolume = 0;
             // need to get widths based on number of points shown,
             // not on total number of points.  Use the results 
             // to speed up drawing in next step.
@@ -189,6 +190,9 @@
                 }
                 else if (d[i][0] < xmax) {
                     xmaxidx = i+1;
+                }
+                if (d[i][5] > maxVolume) {
+                    maxVolume = d[i][5];
                 }
             }
 
@@ -232,6 +236,7 @@
                     hi = yp(d[i][2]);
                     low = yp(d[i][3]);
                     close = yp(d[i][4]);
+                    volume = yp(d[i][5]);
                 }
                 o = {};
                 if (r.candleStick && !r.hlc) {
@@ -319,7 +324,9 @@
                         points = [a, b];
                     }
                     ops = $.extend(true, {}, opts, o);
+                    r.shapeRenderer.draw(ctx, [a, ctx.canvas.height, w, -0.5*ctx.canvas.height*volume/maxVolume], {fillRect:true, fillStyle : volumeFillStyle});
                     r.shapeRenderer.draw(ctx, points, ops);
+
                 }
                 else {
                     prevColor = opts.color;

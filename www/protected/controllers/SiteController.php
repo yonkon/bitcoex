@@ -72,6 +72,38 @@ class SiteController extends Controller
             'limit' => 50
         ));
 
+        $transactionGroups = array();
+        /**
+         * @var Transaction $transaction
+         * @var Transaction[] $tgItem
+         */
+        foreach( $transactions as $transaction) {
+            $tIndex = date('Y-m-d h:i', strtotime($transaction->date));
+            $transactionGroups[$tIndex][]=$transaction;
+        }
+
+        foreach ($transactionGroups as $tgIndex=>$tgItem) {
+            $volume = 0;
+            $open = $tgItem[0]->src_price;
+            $hi = $tgItem[0]->src_price;
+            $close = $tgItem[count($tgItem) -1]->src_price;
+            $low = $tgItem[0]->src_price;
+            foreach ($tgItem as $transaction) {
+                if ($transaction->src_price > $hi) {
+                    $hi = $transaction->src_price;
+                }
+                if ($transaction->src_price < $low) {
+                    $low = $transaction->src_price;
+                }
+                $volume += $transaction->src_count;
+            }
+            $transactionGroups[$tgIndex]['open'] = $open;
+            $transactionGroups[$tgIndex]['hi'] = $hi;
+            $transactionGroups[$tgIndex]['low'] = $low;
+            $transactionGroups[$tgIndex]['close'] = $close;
+            $transactionGroups[$tgIndex]['volume'] = $volume;
+        }
+
         if (Yii::app()->user->isGuest) {
             $user = null;
         } else {
@@ -95,7 +127,8 @@ class SiteController extends Controller
             'max_order' => $max_order,
             'last_order' => $last_order,
             'orders' => $orders,
-            'transactions' => $transactions
+            'transactions' => $transactions,
+            'transactionGroups' => $transactionGroups
             )
         );
 

@@ -10,7 +10,7 @@
             src="/js/jquery.jplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
     <script class="include" type="text/javascript"
             src="/js/jquery.jplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.ohlcRenderer.min.js"></script>
+    <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.ohlcRenderer.js"></script>
     <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.highlighter.min.js"></script>
     <script class="include" type="text/javascript" src="/js/jquery.jplot/plugins/jqplot.cursor.min.js"></script>
     <link rel="stylesheet" href="/js/jquery.jplot/jquery.jqplot.css">
@@ -20,6 +20,12 @@
     {{ parent() }}
     <script type="text/javascript" src="/js/test_plot.js"></script>
     <script type="text/javascript" src="/js/orders_ajax.js"></script>
+    {% if transactionGroups %}
+    <script type="text/javascript">
+        var stockData = array();
+            {% for trans, transItem in transactionGroups %}stockData.push(['{{ trans }}', '{{ transItem.open }}', '{{ transItem.hi }}','{{ transItem.low }}', '{{ transItem.close }}','{{ transItem.volume }}']);{% endfor %}
+    </script>
+    {% endif %}
 {% endblock %}
 
 {% block header %}
