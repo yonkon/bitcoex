@@ -92,6 +92,8 @@ $(document).ready(function () {
         });
     };
 
+    //drawOHLCV(ohlc);
+
 
     volumeData =
         [

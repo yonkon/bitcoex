@@ -78,7 +78,7 @@ class SiteController extends Controller
          * @var Transaction[] $tgItem
          */
         foreach( $transactions as $transaction) {
-            $tIndex = date('Y-m-d h:i', strtotime($transaction->date));
+            $tIndex = date('m/d/Y', strtotime($transaction->date));
             $transactionGroups[$tIndex][]=$transaction;
         }
 

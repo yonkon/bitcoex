@@ -22,8 +22,45 @@
     <script type="text/javascript" src="/js/orders_ajax.js"></script>
     {% if transactionGroups %}
     <script type="text/javascript">
-        var stockData = array();
-            {% for trans, transItem in transactionGroups %}stockData.push(['{{ trans }}', '{{ transItem.open }}', '{{ transItem.hi }}','{{ transItem.low }}', '{{ transItem.close }}','{{ transItem.volume }}']);{% endfor %}
+        var stockData = [];
+            {% for trans, transItem in transactionGroups %}stockData.push(['{{ trans }}', {{ transItem.open }}, {{ transItem.hi }}, {{ transItem.low }}, {{ transItem.close }},1{#{{ transItem.volume }}#}]);
+{% endfor %}
+        var drawOHLCV = function(values) {
+            $.jqplot.config.enablePlugins = true;
+            plot = $.jqplot('jqplot', [values], {
+                title: 'Котировки',
+                axesDefaults: {},
+                axes: {
+                    xaxis: {
+                        renderer: $.jqplot.DateAxisRenderer,
+                        tickOptions: {formatString: '%d %b%n%H:%M:%S'}
+                    },
+                    yaxis: {
+                        tickOptions: {prefix: '$'}
+                    }
+                },
+                series: [{renderer: $.jqplot.OHLCRenderer, rendererOptions: {candleStick: true}}],
+                cursor: {
+                    zoom: true,
+                    tooltipOffset: 10,
+                    tooltipLocation: 'nw'
+                },
+                highlighter: {
+                    showMarker: false,
+                    tooltipAxes: 'xy',
+                    yvalues: 5 ,
+                    formatString: '<table class="jqplot-highlighter"> \
+          <tr><td>date:</td><td>%s</td></tr> \
+          <tr><td>open:</td><td>%s</td></tr> \
+          <tr><td>hi:</td><td>%s</td></tr> \
+          <tr><td>low:</td><td>%s</td></tr> \
+          <tr><td>close:</td><td>%s</td></tr> \
+          <tr><td>volume:</td><td>%s</td></tr> \
+            </table>'
+                }
+            });
+        };
+        drawOHLCV(stockData);
     </script>
     {% endif %}
 {% endblock %}
