@@ -236,7 +236,7 @@
                     hi = yp(d[i][2]);
                     low = yp(d[i][3]);
                     close = yp(d[i][4]);
-                    volume = yp(d[i][5]);
+                    volume = d[i][5];
                 }
                 o = {};
                 if (r.candleStick && !r.hlc) {
