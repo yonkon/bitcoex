@@ -61,7 +61,7 @@
             });
         };
         var testData = true;
-        if (testData) {
+        if (false && testData) {
             for(var i = 0; i<stockData.length; i++) {
                 stockData[i][2] = stockData[i][1] + Math.floor((Math.random() * 100) + 30);
                 stockData[i][3] = stockData[i][1] - Math.floor((Math.random() * 100) );
@@ -127,23 +127,10 @@
             <ul>
                 <li class="price-li price-li-active"><a class="price-a price-a-active">USD</a></li>
                 <li class="price-li"><a class="price-a">USD</a></li>
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
-                {#<li class="price-li"><a class="price-a">USD</a></li>#}
             </ul>
             <div class="col-xs-12 np diagramma">
-                <div id="jqplot"></div>{#<img src="img/123.png">#}
+                <div id="jqplot"></div>
             </div>
-           {# <div class="col-xs-12 np diagramma">
-                <div id="jqChartVolume"></div>&#123;&#35;<img src="img/123.png">&#35;&#125;
-            </div>#}
 
         </div>
         <div class="col-xs-6 mb1e">
