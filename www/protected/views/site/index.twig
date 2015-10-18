@@ -23,7 +23,7 @@
     {% if transactionGroups %}
     <script type="text/javascript">
         var stockData = [];
-            {% for trans, transItem in transactionGroups %}stockData.push(['{{ trans }}', {{ transItem.open }}, {{ transItem.hi }}, {{ transItem.low }}, {{ transItem.close }},1{#{{ transItem.volume }}#}]);
+            {% for trans, transItem in transactionGroups %}stockData.push(['{{ trans }}', {{ transItem.open }}, {{ transItem.hi }}, {{ transItem.low }}, {{ transItem.close }},{{ transItem.volume }}]);
 {% endfor %}
         var drawOHLCV = function(values) {
             $.jqplot.config.enablePlugins = true;

@@ -54,6 +54,7 @@ class SiteController extends Controller
 //            'limit' => 1
         ));
         $orders = array();
+        $transactionGroups = array();
         $orders['total']['sell'] = 0;
         $orders['total']['buy'] = 0;
         foreach ($active_orders as $order) {
@@ -64,6 +65,8 @@ class SiteController extends Controller
                 $orders['buy'][] = $order;
                 $orders['total']['buy'] += $order->rest;
             }
+            $tIndex = date('m/d/Y H:i', $order->date);
+            $transactionGroups[$tIndex][]=$order;
         }
 
         $transactions = Transaction::model()->findAll(array(
@@ -72,30 +75,30 @@ class SiteController extends Controller
             'limit' => 50
         ));
 
-        $transactionGroups = array();
+
         /**
-         * @var Transaction $transaction
-         * @var Transaction[] $tgItem
+         * @var Order $transaction
+         * @var Order[] $tgItem
          */
-        foreach( $transactions as $transaction) {
-            $tIndex = date('m/d/Y', strtotime($transaction->date));
-            $transactionGroups[$tIndex][]=$transaction;
-        }
+//        foreach( $transactions as $transaction) {
+//            $tIndex = date('m/d/Y', strtotime($transaction->date));
+//            $transactionGroups[$tIndex][]=$transaction;
+//        }
 
         foreach ($transactionGroups as $tgIndex=>$tgItem) {
             $volume = 0;
-            $open = $tgItem[0]->src_price;
-            $hi = $tgItem[0]->src_price;
-            $close = $tgItem[count($tgItem) -1]->src_price;
-            $low = $tgItem[0]->src_price;
+            $open = $tgItem[0]->price;
+            $hi = $tgItem[0]->price;
+            $close = $tgItem[count($tgItem) -1]->price;
+            $low = $tgItem[0]->price;
             foreach ($tgItem as $transaction) {
-                if ($transaction->src_price > $hi) {
-                    $hi = $transaction->src_price;
+                if ($transaction->price > $hi) {
+                    $hi = $transaction->price;
                 }
-                if ($transaction->src_price < $low) {
-                    $low = $transaction->src_price;
+                if ($transaction->price < $low) {
+                    $low = $transaction->price;
                 }
-                $volume += $transaction->src_count;
+                $volume += $transaction->summCurrencyEquivalent();
             }
             $transactionGroups[$tgIndex]['open'] = $open;
             $transactionGroups[$tgIndex]['hi'] = $hi;

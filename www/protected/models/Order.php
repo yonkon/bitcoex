@@ -229,6 +229,13 @@ ORDER BY date ASC");
         return true;
 	}
 
+    public function summCurrencyEquivalent() {
+        return $this->summ*$this->price;
+    }
+
+    public function summCryptoEquivalent() {
+        return $this->summ;
+    }
     public function restCurrencyEquivalent(){
         return $this->rest * $this->price;
 
