@@ -15,7 +15,7 @@ class OrderController extends Controller
         $order->setAttributes($_REQUEST);
         if ($order->validate()) {
             $order->save();
-            $order->processCurrentBids();
+            $order->processCurrentBids(); //TODO make money available
         }
 
 		$this->render('create');

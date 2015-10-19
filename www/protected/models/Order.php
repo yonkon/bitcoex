@@ -277,6 +277,11 @@ ORDER BY date ASC");
         if (empty ($this->src_wallet_type) && !empty ($this->src_wallet)) {
             $src_wallet = Wallet::model()->findByPk($this->src_wallet);
             $this->src_wallet_type = $src_wallet->type;
+            if ($this->isBTCSell()) {
+                $src_wallet->available -= $this->summCryptoEquivalent();
+            } else {
+                $src_wallet->available -= $this->summCurrencyEquivalent();
+            }
         }
         if (empty ($this->dst_wallet_type) && !empty ($this->dst_wallet)) {
             $dst_wallet = Wallet::model()->findByPk($this->dst_wallet);
@@ -287,11 +292,11 @@ ORDER BY date ASC");
     public function validate($attributes=null, $clearErrors=true) {
         parent::validate($attributes, $clearErrors);
         if ($this->isBTCBuy()) {
-            if ($this->srcWallet->money < $this->restCurrencyEquivalent()) {
+            if ($this->srcWallet->money < $this->restCurrencyEquivalent() && $this->srcWallet->available < $this->restCurrencyEquivalent()) {
                 $this->addError('src_wallet', Yii::t('order', 'Not enough money for order'));
             }
         } else {
-            if ($this->srcWallet->money < $this->restCryptoEquivalent()) {
+            if ($this->srcWallet->money < $this->restCryptoEquivalent() && $this->srcWallet->available < $this->restCryptoEquivalent()) {
                 $this->addError('src_wallet', Yii::t('order', 'Not enough money for order'));
             }
         }

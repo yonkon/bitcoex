@@ -8,6 +8,7 @@
  * @property integer $user_id
  * @property integer $type
  * @property double $money
+ * @property double $available
  */
 class Wallet extends CActiveRecord
 {
@@ -61,6 +62,7 @@ class Wallet extends CActiveRecord
 			'user_id' => 'User',
 			'type' => 'Type',
 			'money' => 'Money',
+			'available' => 'Available',
 		);
 	}
 
@@ -86,6 +88,7 @@ class Wallet extends CActiveRecord
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('type',$this->type);
 		$criteria->compare('money',$this->money);
+		$criteria->compare('available',$this->available);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
