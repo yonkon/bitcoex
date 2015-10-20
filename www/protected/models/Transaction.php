@@ -126,7 +126,7 @@ class Transaction extends CActiveRecord
         assert(!empty($dstWallet));//  "dstWallet ID# {$this->dst_wallet} not found");
 
         $srcWallet->money -= $this->src_count;
-        $srcWallet->available -= $this->src_count;
+//        $srcWallet->available -= $this->src_count;
         assert($srcWallet->money >= 0 && $srcWallet->available >= 0);//  "srcWallet Assertion failed: negative money");
 
 

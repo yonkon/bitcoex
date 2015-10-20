@@ -277,11 +277,11 @@ ORDER BY date ASC");
         if (empty ($this->src_wallet_type) && !empty ($this->src_wallet)) {
             $src_wallet = Wallet::model()->findByPk($this->src_wallet);
             $this->src_wallet_type = $src_wallet->type;
-//            if ($this->isBTCSell()) {
-//                $src_wallet->available -= $this->summCryptoEquivalent();
-//            } else {
-//                $src_wallet->available -= $this->summCurrencyEquivalent();
-//            }
+            if ($this->isBTCSell()) {
+                $src_wallet->available -= $this->summCryptoEquivalent();
+            } else {
+                $src_wallet->available -= $this->summCurrencyEquivalent();
+            }
         }
         if (empty ($this->dst_wallet_type) && !empty ($this->dst_wallet)) {
             $dst_wallet = Wallet::model()->findByPk($this->dst_wallet);
