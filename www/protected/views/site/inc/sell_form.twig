@@ -10,8 +10,8 @@
             <p class=""><a href="">{{ wallets['BTC'].money}} BTC</a></p>
         </div>
         <div class="col-xs-6">
-            <span>Max цена:</span>
-            <p><b>{{ max_order.price}} USD</b></p>
+            <span>Max/Min цена:</span>
+            <p><b>{{ max_buy_order.price}}/{{ min_buy_order.price}} USD</b></p>
         </div>
     </div>
     <table class="col-xs-12 order-t">
@@ -22,7 +22,7 @@
         </tr>
         <tr class="">
             <td>Цена за BTC:</td>
-            <td><input id="sell_price" name="price" class="w110p" type="text" maxlength="7" value="{{ max_order.price}}"> USD</td>
+            <td><input id="sell_price" name="price" class="w110p" type="text" maxlength="7" value="{{ max_buy_order.price}}"> USD</td>
         </tr>
         <tr>
             <td>Всего:</td>
@@ -42,7 +42,7 @@
                 <a href="" id="sell_calculate" class="button" style="float: left;">Подсчитать</a>
 
                 <div class=""></div>
-                <a href="" id="sell_process" class="button" style="float: right;">Купить BTC</a>
+                <a href="" id="sell_process" class="button" style="float: right;">Продать BTC</a>
 
             </td>
         </tr>

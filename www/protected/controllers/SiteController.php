@@ -34,17 +34,31 @@ class SiteController extends Controller
                 'order' => 'id desc'
             )
         );
-        $min_order = Order::model()->find(
+        $min_buy_order = Order::model()->find(
             array(
-                'condition' => 'status=0',
-                "order" => 'summ asc',
+                'condition' => 'dst_wallet_type IN ('. join(', ', Wallet::$WALLET_CURRENCY_BTC) .') AND status=0 ',
+                "order" => 'price asc',
                 'limit' => 1
             )
         );
-        $max_order = Order::model()->find(
+        $max_buy_order = Order::model()->find(
             array(
-                'condition' => 'status=0',
-                "order" => 'summ desc',
+                'condition' => 'dst_wallet_type IN ('. join(', ', Wallet::$WALLET_CURRENCY_BTC) .') AND status=0 ',
+                "order" => 'price desc',
+                'limit' => 1
+            )
+        );
+        $min_sell_order = Order::model()->find(
+            array(
+                'condition' => 'dst_wallet_type IN ('. join(', ', Wallet::$WALLET_CURRENCY_USD) .') AND status=0 ',
+                "order" => 'price asc',
+                'limit' => 1
+            )
+        );
+        $max_sell_order = Order::model()->find(
+            array(
+                'condition' => 'dst_wallet_type IN ('. join(', ', Wallet::$WALLET_CURRENCY_USD) .') AND status=0',
+                "order" => 'price desc',
                 'limit' => 1
             )
         );
@@ -126,8 +140,10 @@ class SiteController extends Controller
         $this->render('index', array(
             'user'=>$user,
             'wallets' => $user_wallets,
-            'min_order' => $min_order,
-            'max_order' => $max_order,
+            'min_buy_order' => $min_buy_order,
+            'max_buy_order' => $max_buy_order,
+            'min_sell_order' => $min_sell_order,
+            'max_sell_order' => $max_sell_order,
             'last_order' => $last_order,
             'orders' => $orders,
             'transactions' => $transactions,

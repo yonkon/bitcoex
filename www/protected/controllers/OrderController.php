@@ -13,12 +13,16 @@ class OrderController extends Controller
         $_REQUEST['date'] = time();
 		$_REQUEST['status'] = Order::STATUS_NEW;
         $order->setAttributes($_REQUEST);
-        if ($order->validate()) {
-            $order->save();
+        if ($order->validate() && $order->save()) {
+
             $order->processCurrentBids(); //TODO make money available
         }
 
-		$this->render('create');
+		$this->render('create', array(
+			'errors' => array(
+                'order' => $order->getErrors()
+            )
+		));
 	}
 
 	public function actionList()

@@ -131,11 +131,17 @@ class Order extends CActiveRecord
 	public function processCurrentBids()
 	{
         $currentOrders = Order::model();
+        $operation = "=";
+        if ($this->isBTCBuy()) {
+            $operation = "<=";
+        } elseif($this->isBTCSell()) {
+            $operation = ">=";
+        }
         $currentOrders = $currentOrders->findAllBySql(
             "SELECT * FROM {$this->tableName()}
 WHERE dst_wallet_type={$this->src_wallet_type} AND
-price={$this->price} AND
-status={$this->status}
+price {$operation} {$this->price} AND
+status = {$this->status}
 ORDER BY date ASC");
         if (empty($currentOrders)) {
             return false;
@@ -292,11 +298,11 @@ ORDER BY date ASC");
     public function validate($attributes=null, $clearErrors=true) {
         parent::validate($attributes, $clearErrors);
         if ($this->isBTCBuy()) {
-            if ($this->srcWallet->money < $this->restCurrencyEquivalent() && $this->srcWallet->available < $this->restCurrencyEquivalent()) {
+            if ($this->srcWallet->money < $this->restCurrencyEquivalent() || $this->srcWallet->available < $this->restCurrencyEquivalent()) {
                 $this->addError('src_wallet', Yii::t('order', 'Not enough money for order'));
             }
         } else {
-            if ($this->srcWallet->money < $this->restCryptoEquivalent() && $this->srcWallet->available < $this->restCryptoEquivalent()) {
+            if ($this->srcWallet->money < $this->restCryptoEquivalent() || $this->srcWallet->available < $this->restCryptoEquivalent()) {
                 $this->addError('src_wallet', Yii::t('order', 'Not enough money for order'));
             }
         }
