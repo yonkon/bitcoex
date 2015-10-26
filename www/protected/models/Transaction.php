@@ -181,4 +181,5 @@ class Transaction extends CActiveRecord
             return $this->src_count*$this->src_price;
         }
     }
+
 }

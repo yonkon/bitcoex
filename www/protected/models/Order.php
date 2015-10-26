@@ -176,7 +176,7 @@ ORDER BY date ASC");
             $forward_ta->order = $thisOrder->id;
 
             $forward_ta->src_price = $thisOrder->price;
-            $forward_ta->dst_price = $thisOrder->price;
+            $forward_ta->dst_price = $thatOrder->price;
 
             if ($thisOrder->isUSDSell()) {
                 $forward_ta->src_count = $thisOrder->restCurrencyEquivalent();
@@ -192,11 +192,10 @@ ORDER BY date ASC");
 
             $reverse_ta->order = $thatOrder->id;
             $reverse_ta->src_price = $thatOrder->price;
-            $reverse_ta->dst_price = $thatOrder->price;
+            $reverse_ta->dst_price = $thisOrder->price;
 
             assert($forward_ta->src_price == $reverse_ta->dst_price &&
-                $forward_ta->dst_price == $reverse_ta->src_price &&
-                $forward_ta->src_price == $reverse_ta->src_price);//, 'Price equality assertion failed');
+                $forward_ta->dst_price == $reverse_ta->src_price);//, 'Price equality assertion failed');
 
             if ($thisOrder->isUSDSell()) {
                 $reverse_ta->src_count = $thisOrder->restCryptoEquivalent(); //TODO make transacttion go. Check for correct conversion count
@@ -244,22 +243,10 @@ ORDER BY date ASC");
     }
     public function restCurrencyEquivalent(){
         return $this->rest * $this->price;
-
-        if ($this->isBTCSell()) {
-            return $this->rest * $this->price;
-        } else {
-            return $this->rest;
-        }
     }
 
     public function restCryptoEquivalent(){
         return $this->rest;
-
-        if ($this->isBTCSell()) {
-            return $this->rest;
-        } else {
-            return $this->rest / $this->price;
-        }
     }
 
     public function isBTCSell(){
@@ -280,23 +267,54 @@ ORDER BY date ASC");
 
     public function setAttributes($values,$safeOnly=true) {
         parent::setAttributes($values,$safeOnly=true);
+        if ($this->price <= 0) {
+            $this->addError('price', "Must be positive price value");
+            return false;
+        }
+        if ($this->summ <= 0) {
+            $this->addError('summ', "Must be positive summ value");
+            return false;
+        }
         if (empty ($this->src_wallet_type) && !empty ($this->src_wallet)) {
             $src_wallet = Wallet::model()->findByPk($this->src_wallet);
             $this->src_wallet_type = $src_wallet->type;
-            if ($this->isBTCSell()) {
-                $src_wallet->available -= $this->summCryptoEquivalent();
-            } else {
-                $src_wallet->available -= $this->summCurrencyEquivalent();
-            }
         }
+        $reservedSuccess = $this->reserveAvailableMoney();
+        assert($reservedSuccess);
         if (empty ($this->dst_wallet_type) && !empty ($this->dst_wallet)) {
             $dst_wallet = Wallet::model()->findByPk($this->dst_wallet);
             $this->dst_wallet_type = $dst_wallet->type;
         }
     }
 
+    /**
+     * @param Wallet $src_wallet
+     * @return bool if available amount changed
+     */
+    private function reserveAvailableMoney($src_wallet = null) {
+        if (empty($scr_wallet)) {
+            if (empty ($this->srcWallet)) {
+                return false;
+            } else {
+                $src_wallet = $this->srcWallet;
+            }
+        }
+        if ($this->isBTCSell()) {
+            $src_wallet->available -= $this->summCryptoEquivalent();
+        } else {
+            $src_wallet->available -= $this->summCurrencyEquivalent();
+        }
+        return $src_wallet->save();
+    }
+
     public function validate($attributes=null, $clearErrors=true) {
         parent::validate($attributes, $clearErrors);
+        if ($this->price <= 0) {
+            $this->addError('price', "Must be positive price value");
+        }
+        if ($this->summ <= 0) {
+            $this->addError('summ', "Must be positive summ value");
+        }
         if ($this->isBTCBuy()) {
             if ($this->srcWallet->money < $this->restCurrencyEquivalent() || $this->srcWallet->available < $this->restCurrencyEquivalent()) {
                 $this->addError('src_wallet', Yii::t('order', 'Not enough money for order'));
