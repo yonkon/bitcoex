@@ -38,8 +38,16 @@ $(document).ready(
                     type : 'post',
                     data : form_data
                 }).success(function(data){
+                    data = JSON.parse(data);
+                    if (data.errors.order) {
+                        for(var index in data.errors.order) {
+                            if (data.errors.order.hasOwnProperty(index)) {
+                                var attr = data.errors.order[index];
+                                alert(index + ": " + attr);
+                            }
+                        }
+                    }
                     window.location.reload();
-                    console.log(data);
                 });
                 e.preventDefault();
                 e.stopPropagation();
@@ -80,8 +88,16 @@ $(document).ready(
                     type : 'post',
                     data : form_data
                 }).success(function(data){
+                    data = JSON.parse(data);
+                    if (data.errors.order) {
+                        for(var index in data.errors.order) {
+                            if (data.errors.order.hasOwnProperty(index)) {
+                                var attr = data.errors.order[index];
+                                alert(index + ": " + attr);
+                            }
+                        }
+                    }
                     window.location.reload();
-                    console.log(data);
                 });
                 e.preventDefault();
                 e.stopPropagation();
