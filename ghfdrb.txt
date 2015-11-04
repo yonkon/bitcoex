@@ -1,0 +1,24 @@
+Отображение истории - пишется не кол-во BTC а (summ/price)
+История открытых ордеров
+История своих транзакций
+Отмена ордера
+Подтверждение ордера если цена ниже/выше крайних цен на 10%
+Вывести availalbe на страницу
+//todo fix Транзакции: src_count и dst_count совпадают при разно цене
+AJAX
+перевод с tpl на php
+UPDATE ордера - не писать в поле status, если status != ORDER_CLOSED
+
+____________________________________________________
+На будущее
+FLOAT -> BIGINT хранение сумм в БД
+История заказов в отдельную страницу
+цена по клику на открітій ордер летит в форму оформления ордера
+
+
+SELECT t.src_wallet,  t.dst_wallet, t.src_count, t.src_price, t.src_count, t.dst_price,
+IF(sw.type=1, src_count, src_price*src_count) AS srcUSD,
+IF(dw.type=1, dst_count, dst_price*src_count) AS dstUSD,
+IF(sw.type=2, src_count, dst_price/src_count) AS srcBTC,
+IF(dw.type=2, dst_count, src_price/src_count) AS dstBTC
+FROM `tbl_transaction` t join tbl_wallet sw on sw.id = t.src_wallet join tbl_wallet dw on dw.id = t.dst_wallet

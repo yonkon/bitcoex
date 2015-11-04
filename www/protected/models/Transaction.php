@@ -166,6 +166,17 @@ class Transaction extends CActiveRecord
         return $wallet->isUSDWallet();
     }
 
+	public function getSellBTCEquivalent() {
+        if ($this->isBTCSell()) {
+            return $this->srcBTCEquivalent();
+        }
+        if ($this->isBTCBuy()) {
+            return $this->dstBTCEquivalent();
+        }
+    }
+
+
+
     public function srcBTCEquivalent() {
         if ($this->isBTCSell()) {
             return $this->src_count;
@@ -175,6 +186,22 @@ class Transaction extends CActiveRecord
     }
 
     public function srcUSDEquivalent() {
+        if ($this->isBTCBuy()) {
+            return $this->src_count;
+        } else {
+            return $this->src_count*$this->src_price;
+        }
+    }
+
+    public function dstBTCEquivalent() {
+        if ($this->isBTCSell()) {
+            return $this->dst_count;
+        } else {
+            return $this->dst_count/$this->src_price;
+        }
+    }
+
+    public function dstUSDEquivalent() {
         if ($this->isBTCBuy()) {
             return $this->src_count;
         } else {
