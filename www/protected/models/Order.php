@@ -164,51 +164,80 @@ ORDER BY date ASC");
             $forward_ta = new Transaction();
             $reverse_ta = new Transaction();
             $transaction_date = date('Y-m-d H:i:s', time() );
-            //Если предложение покрывает полностью сумму текущего заказа, то закрываем текущий заказ
-            if ($ord->restCurrencyEquivalent() >= $this->restCurrencyEquivalent()) {
-                $thisOrder = $this;
-                $thatOrder = $ord;
-            } else {
-                //Если предложение не покрывает полностью сумму текущего заказа, то закрываем предложение
-                $thisOrder = $ord;
-                $thatOrder = $this;
+            /**
+             * @var Order $thisOrder - closing order
+             * @var Order $thatOrder - matched order for closing order
+             */
+            if ($ord->isBTCBuy()) {
+                //Если предложение покрывает полностью сумму текущего заказа, то закрываем текущий заказ
+                if ($ord->restCryptoEquivalent() >= $this->restCryptoEquivalent()) {
+                    $thisOrder = $this;
+                    $thatOrder = $ord;
+                } else {
+                    //Если предложение не покрывает полностью сумму текущего заказа, то закрываем предложение
+                    $thisOrder = $ord;
+                    $thatOrder = $this;
+                }
             }
+            if ($ord->isBTCSell()) {
+                //Если предложение покрывает полностью сумму текущего заказа, то закрываем текущий заказ
+                if ($ord->restCryptoEquivalent() >= $this->restCryptoEquivalent()) {
+                    $thisOrder = $this;
+                    $thatOrder = $ord;
+                } else {
+                    //Если предложение не покрывает полностью сумму текущего заказа, то закрываем предложение
+                    $thisOrder = $ord;
+                    $thatOrder = $this;
+                }
+            }
+
 
             $forward_ta->order = $thisOrder->id;
+            $reverse_ta->order = $thatOrder->id;
 
-            $forward_ta->src_price = $thisOrder->price;
-            $forward_ta->dst_price = $thatOrder->price;
+            $forward_ta->src_price = $thatOrder->price;
+            $forward_ta->dst_price = $thisOrder->price;
+            $reverse_ta->src_price = $thisOrder->price;
+            $reverse_ta->dst_price = $thatOrder->price;
 
-            if ($thisOrder->isUSDSell()) {
-                $forward_ta->src_count = $thisOrder->restCurrencyEquivalent();
-                $forward_ta->dst_count = $thisOrder->restCurrencyEquivalent(); //TODO make transacttion go. Check for correct conversion count
-            } else {
-                $forward_ta->src_count = $thisOrder->restCryptoEquivalent();
-                $forward_ta->dst_count = $thisOrder->restCryptoEquivalent();
-            }
+            $forward_ta->src_wallet = $thatOrder->src_wallet;
+            $forward_ta->dst_wallet = $thisOrder->dst_wallet;
+            $reverse_ta->src_wallet = $thisOrder->src_wallet;
+            $reverse_ta->dst_wallet = $thatOrder->dst_wallet;
 
-            $forward_ta->src_wallet = $thisOrder->src_wallet;
-            $forward_ta->dst_wallet = $thatOrder->dst_wallet;
+            $reverse_ta->date = $transaction_date;
             $forward_ta->date = $transaction_date;
 
-            $reverse_ta->order = $thatOrder->id;
-            $reverse_ta->src_price = $thatOrder->price;
-            $reverse_ta->dst_price = $thisOrder->price;
-
-            assert($forward_ta->src_price == $reverse_ta->dst_price &&
-                $forward_ta->dst_price == $reverse_ta->src_price);//, 'Price equality assertion failed');
-
-            if ($thisOrder->isUSDSell()) {
-                $reverse_ta->src_count = $thisOrder->restCryptoEquivalent(); //TODO make transacttion go. Check for correct conversion count
+            if ($thisOrder->isBTCSell()) {
+                //todo check
+                $forward_ta->src_count = $thatOrder->getCurrencyEquivalent($thisOrder->restCryptoEquivalent());
+                $forward_ta->dst_count = $thisOrder->restCurrencyEquivalent();
+                $reverse_ta->src_count = $thisOrder->restCryptoEquivalent();
                 $reverse_ta->dst_count = $thisOrder->restCryptoEquivalent();
-            } else {
+            } else if($thisOrder->isBTCBuy()) {
+                $forward_ta->src_count = $thisOrder->restCryptoEquivalent();
+                $forward_ta->dst_count = $thisOrder->restCryptoEquivalent();
                 $reverse_ta->src_count = $thisOrder->restCurrencyEquivalent();
-                $reverse_ta->dst_count = $thisOrder->restCurrencyEquivalent();
+                $reverse_ta->dst_count = $thatOrder->getCurrencyEquivalent($thisOrder->restCryptoEquivalent());
             }
 
-            $reverse_ta->src_wallet = $thatOrder->src_wallet;
-            $reverse_ta->dst_wallet = $thisOrder->dst_wallet;
-            $reverse_ta->date = $transaction_date;
+
+
+
+            if(!($forward_ta->src_price == $reverse_ta->dst_price &&
+                $forward_ta->dst_price == $reverse_ta->src_price)) {
+                throw new Exception('Price equality assertion failed');
+            }
+
+//            if ($thisOrder->isUSDSell()) {
+//                $reverse_ta->src_count = $thisOrder->restCryptoEquivalent(); //TODO make transacttion go. Check for correct conversion count
+//                $reverse_ta->dst_count = $thisOrder->restCryptoEquivalent();
+//            } else {
+//                $reverse_ta->src_count = $thisOrder->restCurrencyEquivalent();
+//                $reverse_ta->dst_count = $thisOrder->restCurrencyEquivalent();
+//            }
+
+
 
 
             $reverse_result = $reverse_ta->validate();
@@ -327,6 +356,16 @@ ORDER BY date ASC");
             }
         }
         return !$this->hasErrors();
+    }
+
+    private function getCurrencyEquivalent($summ)
+    {
+        return $summ*$this->price;
+    }
+
+    private function ConvertToCurrency($restCryptoEquivalent)
+    {
+        return $restCryptoEquivalent*$this->price;
     }
 
 }
