@@ -120,14 +120,17 @@ class Transaction extends CActiveRecord
     public function beforeSave() {
         parent::beforeSave();
         $srcWallet = Wallet::model()->findByPk($this->src_wallet);
-        assert(!empty($srcWallet));//  "srcWallet ID# {$this->src_wallet} not found");
+        if(empty($srcWallet)) {
+            throw new Exception("srcWallet ID# {$this->src_wallet} not found");
+        }
+
 
         $dstWallet = Wallet::model()->findByPk($this->dst_wallet);
-        assert(!empty($dstWallet));//  "dstWallet ID# {$this->dst_wallet} not found");
+        if(!(!empty($dstWallet))) { throw new Exception( "dstWallet ID# {$this->dst_wallet} not found"); }
 
         $srcWallet->money -= $this->src_count;
 //        $srcWallet->available -= $this->src_count;
-        assert($srcWallet->money >= 0 && $srcWallet->available >= 0);//  "srcWallet Assertion failed: negative money");
+        if(!($srcWallet->money >= 0 && $srcWallet->available >= 0)) { throw new Exception( "srcWallet Assertion failed: negative money"); }
 
 
         $dstWallet->money += $this->dst_count;
@@ -135,10 +138,14 @@ class Transaction extends CActiveRecord
         if ($dstWallet->available > $dstWallet->money) {
             $dstWallet->available = $dstWallet->money;
         }
-        assert($dstWallet->money >= 0 && $dstWallet->available >= 0);//  "dstWallet Assertion failed: negative money");
-		if ($srcWallet->save()&& $dstWallet->save() ) {
-            return !$this->hasErrors();
-            //return true;
+        if(!($dstWallet->money >= 0 && $dstWallet->available >= 0)) { throw new Exception( "dstWallet Assertion failed: negative money"); }
+        $srcWalletResult = true;
+        $dstWalletResult = true;
+		if (!$srcWalletResult = $srcWallet->save()) {
+            $this->addError('srcWallet', $srcWallet->getErrors());
+        }
+        if (!$dstWalletResult = $dstWallet->save() ) {
+            $this->addError('srcWallet', $srcWallet->getErrors());
         }
 
         return !$this->hasErrors();
@@ -173,6 +180,7 @@ class Transaction extends CActiveRecord
         if ($this->isBTCBuy()) {
             return $this->dstBTCEquivalent();
         }
+        throw new Exception('Could not recognize order currency pair');
     }
 
 
@@ -180,9 +188,11 @@ class Transaction extends CActiveRecord
     public function srcBTCEquivalent() {
         if ($this->isBTCSell()) {
             return $this->src_count;
-        } else {
+        }
+        if ($this->isBTCBuy()) {
             return $this->src_count/$this->src_price;
         }
+        throw new Exception('Could not recognize order currency pair');
     }
 
     public function srcUSDEquivalent() {

@@ -15,10 +15,15 @@ class OrderController extends Controller
         $order->setAttributes($_REQUEST);
         if ($order->validate(null, false) && $order->save()) {
 
-            $order->processCurrentBids(); //TODO make money available
+           if( $order->processCurrentBids()) {
+               echo json_encode(array(
+                  'status' => 'OK'
+               ));
+           }
         }
 
         echo json_encode(array(
+            'status' => 'error',
             'errors' => array(
                 'order' => $order->getErrors()
             )
@@ -30,11 +35,6 @@ class OrderController extends Controller
                 'order' => $order->getErrors()
             )
         )));
-//		$this->render('create', array(
-//			'errors' => array(
-//                'order' => $order->getErrors()
-//            )
-//		));
 	}
 
 	public function actionList()

@@ -57,7 +57,8 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
 
         </div>
         <div class="col-xs-6 mb1e">
-            <?php $this->renderPartial('inc/buy_form',
+            <?php if(!$app->user->isGuest)
+                $this->renderPartial('inc/buy_form',
                 array('min_sell_order' => $min_sell_order,
                     'max_sell_order' => $max_sell_order,
                     'min_buy_order' => $min_buy_order,
@@ -65,7 +66,8 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
                     'wallets' => $wallets)); ?>
         </div>
         <div class="col-xs-6 mb1e">
-            <?php $this->renderPartial('inc/sell_form',  array('min_sell_order' => $min_sell_order,
+            <?php if(!$app->user->isGuest)
+                $this->renderPartial('inc/sell_form',  array('min_sell_order' => $min_sell_order,
                 'max_sell_order' => $max_sell_order,
                 'min_buy_order' => $min_buy_order,
                 'max_buy_order' => $max_buy_order,

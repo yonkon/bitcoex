@@ -38,16 +38,7 @@ $(document).ready(
                     type : 'post',
                     data : form_data
                 }).success(function(data){
-                    data = JSON.parse(data);
-                    if (data.errors.order) {
-                        for(var index in data.errors.order) {
-                            if (data.errors.order.hasOwnProperty(index)) {
-                                var attr = data.errors.order[index];
-                                alert(index + ": " + attr);
-                            }
-                        }
-                    }
-                    window.location.reload();
+                    processBuySellAjaxSuccess(data);
                 });
                 e.preventDefault();
                 e.stopPropagation();
@@ -88,20 +79,39 @@ $(document).ready(
                     type : 'post',
                     data : form_data
                 }).success(function(data){
-                    data = JSON.parse(data);
-                    if (data.errors.order) {
-                        for(var index in data.errors.order) {
-                            if (data.errors.order.hasOwnProperty(index)) {
-                                var attr = data.errors.order[index];
-                                alert(index + ": " + attr);
-                            }
-                        }
-                    }
-                    window.location.reload();
+                    processBuySellAjaxSuccess(data);
                 });
                 e.preventDefault();
                 e.stopPropagation();
             }
         );
+
+        function processBuySellAjaxSuccess(data) {
+            try {
+                data = JSON.parse(data);
+                if (data.status == "OK") {
+                    window.location.reload();
+                } else {
+                    var errorText = "";
+
+                    if (data.errors.order) {
+                        for(var index in data.errors.order) {
+                            if (data.errors.order.hasOwnProperty(index)) {
+                                var attr = data.errors.order[index];
+                                errorText += index + ": " + attr + "\n" ;
+                            }
+                        }
+                    }
+                    if (errorText.length) {
+                        alert(errorText);
+                    } else {
+                        errorText = "Площадка дала ответ со статусом \"" + data.status + "\", но деталей ошибки не последовало. Скорее всего у площадки начались \"эти дни\". Просим извинения и подорждать некоторое время";
+                        alert(errorText);
+                    }
+                }
+            } catch(e) {
+                alert("Ошибка: невозможно разобрать ответ сервера, походу сервер пьян и ему пора идти домой!");
+            }
+        }
     }
 );

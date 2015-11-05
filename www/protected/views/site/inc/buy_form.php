@@ -19,7 +19,8 @@ $app = Yii::app();
             <div class="col-xs-6 np">
                 <span class="">Ваши средства:</span>
 
-                <p class=""><a href=""><?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->money); ?> USD</a></p>
+                <p class=""><a href=""><?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->available); ?> USD</a></p>
+                <p class="small"><a href=""><?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->money); ?> USD</a></p>
             </div>
             <div class="col-xs-6">
                 <span>Min/Max  цена:</span>

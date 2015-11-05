@@ -67,10 +67,15 @@ class SiteController extends Controller
 //            "order" => 'summ asc',
 //            'limit' => 1
         ));
-        $orders = array();
+        $orders = array(
+            'buy'   =>array(),
+            'sell'  =>array(),
+            'total' => array(
+                'sell' => 0,
+                'buy' => 0,
+            )
+        );
         $transactionGroups = array();
-        $orders['total']['sell'] = 0;
-        $orders['total']['buy'] = 0;
         foreach ($active_orders as $order) {
             if ($order->isBTCSell()) {
                 $orders['sell'][] = $order;
@@ -197,7 +202,7 @@ class SiteController extends Controller
         // if it is ajax validation request
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
             echo CActiveForm::validate($model);
-            Yii::app()->end();
+            Yii::app()->controller->end();
         }
 
         // collect user input data

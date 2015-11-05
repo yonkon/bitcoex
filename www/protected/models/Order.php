@@ -130,6 +130,7 @@ class Order extends CActiveRecord
 
 	public function processCurrentBids()
 	{
+
         $currentOrders = Order::model();
         $operation = "=";
         if ($this->isBTCBuy()) {
@@ -153,7 +154,7 @@ ORDER BY date ASC");
                 $this->save();
                 break;
             }
-            assert($this->rest > 0);//, "Assertion failed: Order ID#{$this->id} has a negative rest value");
+            if(!($this->rest > 0)) { throw new Exception("Assertion failed: Order ID#{$this->id} has a negative rest value"); }
             if ($ord->rest == 0) {
                 continue;
             }
@@ -165,80 +166,66 @@ ORDER BY date ASC");
             $reverse_ta = new Transaction();
             $transaction_date = date('Y-m-d H:i:s', time() );
             /**
-             * @var Order $thisOrder - closing order
-             * @var Order $thatOrder - matched order for closing order
+             * @var Order $minorOrder - closing order
+             * @var Order $majorOrder - matched order for closing order
              */
             if ($ord->isBTCBuy()) {
                 //Если предложение покрывает полностью сумму текущего заказа, то закрываем текущий заказ
                 if ($ord->restCryptoEquivalent() >= $this->restCryptoEquivalent()) {
-                    $thisOrder = $this;
-                    $thatOrder = $ord;
+                    $minorOrder = $this;
+                    $majorOrder = $ord;
                 } else {
                     //Если предложение не покрывает полностью сумму текущего заказа, то закрываем предложение
-                    $thisOrder = $ord;
-                    $thatOrder = $this;
+                    $minorOrder = $ord;
+                    $majorOrder = $this;
                 }
             }
             if ($ord->isBTCSell()) {
                 //Если предложение покрывает полностью сумму текущего заказа, то закрываем текущий заказ
                 if ($ord->restCryptoEquivalent() >= $this->restCryptoEquivalent()) {
-                    $thisOrder = $this;
-                    $thatOrder = $ord;
+                    $minorOrder = $this;
+                    $majorOrder = $ord;
                 } else {
                     //Если предложение не покрывает полностью сумму текущего заказа, то закрываем предложение
-                    $thisOrder = $ord;
-                    $thatOrder = $this;
+                    $minorOrder = $ord;
+                    $majorOrder = $this;
                 }
             }
 
 
-            $forward_ta->order = $thisOrder->id;
-            $reverse_ta->order = $thatOrder->id;
+            $forward_ta->order = $minorOrder->id;
+            $reverse_ta->order = $majorOrder->id;
 
-            $forward_ta->src_price = $thatOrder->price;
-            $forward_ta->dst_price = $thisOrder->price;
-            $reverse_ta->src_price = $thisOrder->price;
-            $reverse_ta->dst_price = $thatOrder->price;
+            $forward_ta->src_price = $majorOrder->price;
+            $forward_ta->dst_price = $minorOrder->price;
+            $reverse_ta->src_price = $minorOrder->price;
+            $reverse_ta->dst_price = $majorOrder->price;
 
-            $forward_ta->src_wallet = $thatOrder->src_wallet;
-            $forward_ta->dst_wallet = $thisOrder->dst_wallet;
-            $reverse_ta->src_wallet = $thisOrder->src_wallet;
-            $reverse_ta->dst_wallet = $thatOrder->dst_wallet;
+            $forward_ta->src_wallet = $majorOrder->src_wallet;
+            $forward_ta->dst_wallet = $minorOrder->dst_wallet;
+            $reverse_ta->src_wallet = $minorOrder->src_wallet;
+            $reverse_ta->dst_wallet = $majorOrder->dst_wallet;
 
             $reverse_ta->date = $transaction_date;
             $forward_ta->date = $transaction_date;
 
-            if ($thisOrder->isBTCSell()) {
+            if ($minorOrder->isBTCSell()) {
                 //todo check
-                $forward_ta->src_count = $thatOrder->getCurrencyEquivalent($thisOrder->restCryptoEquivalent());
-                $forward_ta->dst_count = $thisOrder->restCurrencyEquivalent();
-                $reverse_ta->src_count = $thisOrder->restCryptoEquivalent();
-                $reverse_ta->dst_count = $thisOrder->restCryptoEquivalent();
-            } else if($thisOrder->isBTCBuy()) {
-                $forward_ta->src_count = $thisOrder->restCryptoEquivalent();
-                $forward_ta->dst_count = $thisOrder->restCryptoEquivalent();
-                $reverse_ta->src_count = $thisOrder->restCurrencyEquivalent();
-                $reverse_ta->dst_count = $thatOrder->getCurrencyEquivalent($thisOrder->restCryptoEquivalent());
+                $forward_ta->src_count = $majorOrder->getCurrencyEquivalent($minorOrder->restCryptoEquivalent());
+                $forward_ta->dst_count = $minorOrder->restCurrencyEquivalent();
+                $reverse_ta->src_count = $minorOrder->restCryptoEquivalent();
+                $reverse_ta->dst_count = $minorOrder->restCryptoEquivalent();
+            } else if($minorOrder->isBTCBuy()) {
+                $forward_ta->src_count = $minorOrder->restCryptoEquivalent();
+                $forward_ta->dst_count = $minorOrder->restCryptoEquivalent();
+                $reverse_ta->src_count = $minorOrder->restCurrencyEquivalent();
+                $reverse_ta->dst_count = $majorOrder->getCurrencyEquivalent($minorOrder->restCryptoEquivalent());
             }
-
-
-
 
             if(!($forward_ta->src_price == $reverse_ta->dst_price &&
                 $forward_ta->dst_price == $reverse_ta->src_price)) {
                 throw new Exception('Price equality assertion failed');
             }
-
-//            if ($thisOrder->isUSDSell()) {
-//                $reverse_ta->src_count = $thisOrder->restCryptoEquivalent(); //TODO make transacttion go. Check for correct conversion count
-//                $reverse_ta->dst_count = $thisOrder->restCryptoEquivalent();
-//            } else {
-//                $reverse_ta->src_count = $thisOrder->restCurrencyEquivalent();
-//                $reverse_ta->dst_count = $thisOrder->restCurrencyEquivalent();
-//            }
-
-
-
 
             $reverse_result = $reverse_ta->validate();
             $forward_result = $forward_ta->validate();
@@ -248,20 +235,23 @@ ORDER BY date ASC");
                 $reverse_result = $reverse_ta->save();
                 if ($forward_result && $reverse_result) {
                     //TODO check order rest change
-                    $thatOrder->rest -= $thisOrder->rest;
-                    if($thatOrder->rest == 0) {
-                        $thatOrder->status = Order::STATUS_CLOSED;
+                    $majorOrder->rest -= $minorOrder->rest;
+                    if($majorOrder->rest == 0) {
+                        $majorOrder->status = Order::STATUS_CLOSED;
                     }
-                    $thatOrder->save();
+                    if (!$majorOrder->save()) {
+                        $this->addError('rest', "Order ID#{$majorOrder->id}(major) could not be saved");
+                    }
 
-                    $thisOrder->rest = 0;
-                    $thisOrder->status = Order::STATUS_CLOSED;
-                    $thisOrder->save();
-
+                    $minorOrder->rest = 0;
+                    $minorOrder->status = Order::STATUS_CLOSED;
+                    if (!$minorOrder->save()) {
+                        $this->addError('rest', "Order ID#{$minorOrder->id}(minor) could not be saved");
+                    }
                 }
             }
         }
-        return true;
+        return $this->hasErrors();
 	}
 
     public function summCurrencyEquivalent() {
@@ -363,9 +353,28 @@ ORDER BY date ASC");
         return $summ*$this->price;
     }
 
-    private function ConvertToCurrency($restCryptoEquivalent)
+    protected function beforeValidate()
     {
-        return $restCryptoEquivalent*$this->price;
+        $cur_date = $this->date;
+        if (empty($cur_date)) {
+            $cur_date = time();
+        } else {
+            if (!is_numeric($cur_date)) {
+                $cur_date = strtotime($cur_date);
+            }
+        }
+        $this->date = $cur_date;
+        return parent::beforeSave();
+    }
+
+    protected function beforeSave()
+    {
+        $this->date = date('Y-m-d H:i:s', $this->date);
+        return parent::beforeSave();
+    }
+
+    protected function afterSave() {
+        $this->date = strtotime($this->date);
     }
 
 }

@@ -19,7 +19,9 @@ $app = Yii::app();
     <div class="col-xs-12 order-h mb1e">
         <div class="col-xs-6 np">
             <span class="">Ваши средства:</span>
-            <p class=""><a href=""><?php  if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->money ); ?> BTC</a></p>
+            <p class=""><a href=""><?php  if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->available ); ?> BTC</a></p>
+            <p class="small"><a href=""><?php if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->money); ?> BTC</a></p>
+
         </div>
         <div class="col-xs-6">
             <span>Max/Min цена:</span>
