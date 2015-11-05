@@ -1,6 +1,6 @@
 Отображение истории - пишется не кол-во BTC а (summ/price)
-История открытых ордеров
-История своих транзакций
+hiстория открытых ордеров
+hiстория своих транзакций
 Отмена ордера
 Подтверждение ордера если цена ниже/выше крайних цен на 10%
 Вывести availalbe на страницу
@@ -12,7 +12,7 @@ UPDATE ордера - не писать в поле status, если status != O
 ____________________________________________________
 На будущее
 FLOAT -> BIGINT хранение сумм в БД
-История заказов в отдельную страницу
+�?стория заказов в отдельную страницу
 цена по клику на открітій ордер летит в форму оформления ордера
 
 
@@ -22,6 +22,9 @@ IF(dw.type=1, dst_count, dst_price*src_count) AS dstUSD,
 IF(sw.type=2, src_count, dst_price/src_count) AS srcBTC,
 IF(dw.type=2, dst_count, src_price/src_count) AS dstBTC
 FROM `tbl_transaction` t join tbl_wallet sw on sw.id = t.src_wallet join tbl_wallet dw on dw.id = t.dst_wallet
+
+UPDATE `tbl_order` SET rest = 0, status=1 WHERE 1;
+UPDATE `tbl_wallet` SET `money`=10000,`available`=10000 WHERE 1;
 
 _______________________________________
 Перевод ассертов в эксепшны

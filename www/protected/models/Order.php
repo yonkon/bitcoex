@@ -146,7 +146,7 @@ status = {$this->status} AND
 user != {$this->user}
 ORDER BY date ASC");
         if (empty($currentOrders)) {
-            return false;
+            return !$this->hasErrors();
         }
         foreach ($currentOrders as $ord) {
             if ($this->rest == 0 ) {
