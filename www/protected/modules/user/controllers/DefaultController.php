@@ -2,7 +2,10 @@
 
 class DefaultController extends Controller
 {
-	
+
+	public $layout='//layouts/standart';
+
+
 	/**
 	 * Lists all models.
 	 */

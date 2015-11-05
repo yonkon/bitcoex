@@ -3,7 +3,7 @@
 class SiteController extends Controller
 {
 //	public $layout='column1';
-    public $layout = false;
+    public $layout = 'standart';
 
     /**
      * Declares class-based actions.
@@ -138,16 +138,16 @@ class SiteController extends Controller
         }
 
         $this->render('index', array(
-            'user'=>$user,
-            'wallets' => $user_wallets,
-            'min_buy_order' => $min_buy_order,
-            'max_buy_order' => $max_buy_order,
-            'min_sell_order' => $min_sell_order,
-            'max_sell_order' => $max_sell_order,
-            'last_order' => $last_order,
-            'orders' => $orders,
-            'transactions' => $transactions,
-            'transactionGroups' => $transactionGroups
+            'user'                  => $user,
+            'wallets'               => $user_wallets,
+            'min_buy_order'         => $min_buy_order,
+            'max_buy_order'         => $max_buy_order,
+            'min_sell_order'        => $min_sell_order,
+            'max_sell_order'        => $max_sell_order,
+            'last_order'            => $last_order,
+            'orders'                => $orders,
+            'transactions'          => $transactions,
+            'transactionGroups'     => $transactionGroups
             )
         );
 

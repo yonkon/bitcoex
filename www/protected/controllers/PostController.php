@@ -3,7 +3,7 @@
 class PostController extends Controller
 {
 //	public $layout='column2';
-    public $layout = false;
+    public $layout = 'standart';
 
     /**
      * @var CActiveRecord the currently loaded data model instance.
