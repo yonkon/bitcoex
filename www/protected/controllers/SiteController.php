@@ -95,13 +95,21 @@ class SiteController extends Controller
         ));
 
 
+
+        Transaction::prepareForPlot($transactions,  $lengthSeconds,  $timeGroupInterval, $endTime, $indexFormat );
+        Transaction::groupByTime($transactions,  $lengthSeconds,  $timeGroupInterval, $endTime, $indexFormat);
         /**
          * @var Transaction $transaction
          * @var Transaction[] $tgItem
          */
         foreach( $transactions as $transaction) {
-            $tIndex = date('m/d/Y H:i', strtotime($transaction->date));
-            $transactionGroups[$tIndex][]=$transaction;
+            $now = time();
+            $dayBefore = $now - Helpers::SECONDS_IN_DAY;
+            $tr_time = strtotime($transaction->date);
+            if($dayBefore <= $tr_time) { //Ограничиваем вывод транзакций на график 24 чавсами
+                $tIndex = date('m/d/Y H:i', $tr_time); //group transactions by 1 minute
+                $transactionGroups[$tIndex][]=$transaction;
+            }
         }
 
         foreach ($transactionGroups as $tgIndex=>$tgItem) {

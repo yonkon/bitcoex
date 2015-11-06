@@ -16,7 +16,41 @@
  */
 class Transaction extends CActiveRecord
 {
-	/**
+    public static function prepareForPlot($transactions, $lengthSeconds = Helpers::SECONDS_IN_DAY, $timeGroupModule = 5, $timeGroupMeasureItem ='m', $endTime = null, $indexFormat = 'm/d/Y H:i')
+    {
+
+    }
+
+    /**
+     * @param Transaction[] $transactions - transactions array to be grouped
+     * @param integer $lengthSeconds - time lapse in seconds before $endTime to be processed and added to result array. All transactions not in the lapse are ignored. By default processed transactions are considered to be in 24h before the current time.
+     * @param integer $timeGroupModule - parameter sets module to group transactions by according to measure item (passed in $timeGroupMeasureItem). By default transactions are grouped by 5 minutes - $timeGroupModule = 5
+     * @param string $timeGroupMeasureItem - parameter sets measure item to group transactions by. By default transactions are grouped by each minute - $timeGroupModule = 5, $timeGroupMeasureItem = 'm'
+     * @param integer $endTime - time() representation of last transaction date to be processed. Transactions with date after $endTime will be ignred. By default used current timestamp value ( calls time() )
+     * @see time()
+     * @param string $indexFormat Time format, representing date format string for TransactionGroups indexes. By default considered as 'm/d/Y H:i'
+     * @see date()
+     * @return Transaction[] TransactionsGroups as hash array with keys like date formatted strings and values like arrays of Transactions, having date that belongs to date group, represented by key
+     */
+    public static function groupByTime($transactions, $lengthSeconds = Helpers::SECONDS_IN_DAY, $timeGroupModule = 5, $timeGroupMeasureItem ='m', $endTime = null, $indexFormat = 'm/d/Y H:i')
+    {
+        /**
+         * @var Transaction $transaction
+         * @var Transaction[] $tgItem
+         */
+        foreach( $transactions as $transaction) {
+            $endTime = empty($endTime) ? time() : $endTime;
+            $startTime = $endTime - $lengthSeconds;
+            $tr_time = strtotime($transaction->date);
+            $tr_time = Helpers::roundTimeUp($tr_time, $timeGroupModule, $timeGroupMeasureItem);
+            if($startTime <= $tr_time) { //Ограничиваем вывод транзакций на график 24 чавсами
+                $tIndex = date($indexFormat, $tr_time); //group transactions by 1 minute
+                $transactionGroups[$tIndex][]=$transaction;
+            }
+        }
+    }
+
+    /**
 	 * @return string the associated database table name
 	 */
 	public function tableName()

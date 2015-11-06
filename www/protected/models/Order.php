@@ -251,7 +251,7 @@ ORDER BY date ASC");
                 }
             }
         }
-        return $this->hasErrors();
+        return !$this->hasErrors();
 	}
 
     public function summCurrencyEquivalent() {
