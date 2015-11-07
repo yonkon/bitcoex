@@ -281,8 +281,45 @@ canvas, #jqplot {
     color: red;
 }
 
+
+#userOrders tr.hover {
+  background: rgba(222, 222, 255, 0.5);
+}
+
+#userOrders {
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+}
+
+
+#userOrders::after {
+  content: ' ';
+  display: inline-block;
+  position: absolute;
+  bottom: -13px;
+  right: -13px;
+  width: 26px;
+  height: 26px;
+  background: url('./mouse-right.png');
+}
 .user-orders-context-menu {
   position: absolute;
-  padding: 1em;
-  background: grey;
+  padding: 0;
+  background: rgba(251, 251, 251, 0.7);
+  border: 1px solid gray;
+  width: 92%;
+}
+
+.user-orders-context-menu-option {
+  display: block;
+  padding: 5px;
+  border-bottom: 1px solid darkgray;
+  text-decoration: none;
+  background: rgba(251, 251, 251, 0.7);
+  cursor: pointer;
+}
+
+.user-orders-context-menu-option:hover {
+ background: rgba(75, 86, 222, 0.7);
+  text-decoration: none;
 }

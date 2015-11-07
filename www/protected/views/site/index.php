@@ -33,169 +33,178 @@ $app->clientScript->registerCssFile('/js/jquery.jplot/jquery.jqplot.css');
 
 //BODY CLOSE SCRIPTS
 //$app->clientScript->registerScriptFile("/js/test_plot.js", CClientScript::POS_END);
-$app->clientScript->registerScriptFile("/js/orders_ajax.js", CClientScript::POS_END );
+$app->clientScript->registerScriptFile("/js/orders_ajax.js", CClientScript::POS_END);
 $drawPlotInline = $this->renderPartial('inc/js/indexDrawPlotInline', array('transactionGroups' => $transactionGroups), true);
-$app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClientScript::POS_END );
+$app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClientScript::POS_END);
 
 
 ?>
-    <div class="col-md-8 col-xs-12">
-        <div class="col-xs-12 border1 mb1e">
-            <span><b>Новости</b></span>
+<div class="col-md-8 col-xs-12">
+  <div class="col-xs-12 border1 mb1e">
+    <span><b>Новости</b></span>
 
-            <p class="m1e"><b>19/08/2015</b> <span>Путин хуйло</span></p>
+    <p class="m1e"><b>19/08/2015</b> <span>Путин хуйло</span></p>
 
-            <p class="m1e"><b>19/08/2015</b> <span>ла-ла-ла</span></p>
-        </div>
-        <div class="col-xs-12 border1 mb1e pt1e">
-            <ul>
-                <li class="price-li price-li-active"><a class="price-a price-a-active">USD</a></li>
-                <li class="price-li"><a class="price-a">USD</a></li>
-            </ul>
-            <div class="col-xs-12 np diagramma">
-                <div id="jqplot"></div>
-            </div>
+    <p class="m1e"><b>19/08/2015</b> <span>ла-ла-ла</span></p>
+  </div>
+  <div class="col-xs-12 border1 mb1e pt1e">
+    <ul>
+      <li class="price-li price-li-active"><a class="price-a price-a-active">USD</a></li>
+      <li class="price-li"><a class="price-a">USD</a></li>
+    </ul>
+    <div class="col-xs-12 np diagramma">
+      <div id="jqplot"></div>
+    </div>
 
-        </div>
-        <div class="col-sm-6 col-xs-12 mb1e border1 np">
-            <?php if(!$app->user->isGuest)
-                $this->renderPartial('inc/buy_form',
-                array('min_sell_order' => $min_sell_order,
-                    'max_sell_order' => $max_sell_order,
-                    'min_buy_order' => $min_buy_order,
-                    'max_buy_order' => $max_buy_order,
-                    'wallets' => $wallets)); ?>
-        </div>
-        <div class="col-sm-6 col-xs-12 mb1e border1 np">
-            <?php if(!$app->user->isGuest)
-                $this->renderPartial('inc/sell_form',  array('min_sell_order' => $min_sell_order,
-                'max_sell_order' => $max_sell_order,
-                'min_buy_order' => $min_buy_order,
-                'max_buy_order' => $max_buy_order,
-                'wallets' => $wallets)); ?>
+  </div>
+  <div class="col-sm-6 col-xs-12 mb1e border1 np">
+    <?php if (!$app->user->isGuest)
+      $this->renderPartial('inc/buy_form',
+        array('min_sell_order' => $min_sell_order,
+          'max_sell_order' => $max_sell_order,
+          'min_buy_order' => $min_buy_order,
+          'max_buy_order' => $max_buy_order,
+          'wallets' => $wallets)); ?>
+  </div>
+  <div class="col-sm-6 col-xs-12 mb1e border1 np">
+    <?php if (!$app->user->isGuest)
+      $this->renderPartial('inc/sell_form', array('min_sell_order' => $min_sell_order,
+        'max_sell_order' => $max_sell_order,
+        'min_buy_order' => $min_buy_order,
+        'max_buy_order' => $max_buy_order,
+        'wallets' => $wallets)); ?>
 
-        </div>
+  </div>
 
-        <div class="clearfix">&nbsp;</div>
+  <div class="clearfix">&nbsp;</div>
 
-        <div class="col-xs-6 mb1e">
-            <div class="border1 col-xs-12 row">
-                <h5>Ордера на продажу BTC</h5>
-                <p class="flr">Всего <?php echo  $orders['total']['sell']; ?> BTC</p>
-                <div style="overflow:auto; max-height: 500px;" class="col-xs-12 np">
-                <table class="table" style="width: 100%">
-                    <tbody>
-                    <tr class="table-bg">
-                        <th>Цена</th>
-                        <th>BTC</th>
-                        <th>USD</th>
-                    </tr>
-                    <?php foreach($orders['sell'] as $no => $order) { ?>
-                        <tr <?php if ($order->user == $app->user->id) { ?> style="color: gainsboro; "<?php }  ?>>
-                            <td><?php echo   $order->price ; ?></td>
-                            <td><?php echo   $order->rest ; ?></td>
-                            <td><?php echo   $order->restCurrencyEquivalent() ; ?></td>
-                        </tr>
-                    <?php }  ?>
-                    </tbody>
-                </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-6 mb1e">
-            <div class="border1 col-xs-12">
-                <h5>Ордера на покупку BTC</h5>
-                <p class="flr">Всего <?php echo  $orders['total']['buy']; ?> BTC</p>
-                <div style="overflow:auto; max-height: 500px;" class="col-xs-12 np">
-                    <table class="table" style="width: 100%">
-                        <tbody>
-                        <tr class="table-bg">
-                            <th>Цена</th>
-                            <th>BTC</th>
-                            <th>USD</th>
-                        </tr>
-                        <?php foreach ($orders['buy'] as $no => $order) { ?>
-                            <tr<?php if ($order->user == $app->user->id) { ?> style="color: gainsboro; "<?php }  ?>>
-                                <td><?php echo   $order->price ; ?></td>
-                                <td><?php echo   $order->rest ; ?></td>
-                                <td><?php echo   $order->restCurrencyEquivalent() ; ?></td>
-                            </tr>
-                        <?php }  ?>
-                        </tbody>
-                    </table>
-                </div>
+  <div class="col-xs-6 mb1e">
+    <div class="border1 col-xs-12 row">
+      <h5>Ордера на продажу BTC</h5>
 
-            </div>
-        </div>
+      <p class="flr">Всего <?php echo $orders['total']['sell']; ?> BTC</p>
 
+      <div style="overflow:auto; max-height: 500px;" class="col-xs-12 np">
+        <table class="table" style="width: 100%">
+          <tbody>
+          <tr class="table-bg">
+            <th>Цена</th>
+            <th>BTC</th>
+            <th>USD</th>
+          </tr>
+          <?php foreach ($orders['sell'] as $no => $order) { ?>
+            <tr <?php if ($order->user == $app->user->id) { ?> style="color: gainsboro; "<?php } ?>>
+              <td><?php echo $order->price; ?></td>
+              <td><?php echo $order->rest; ?></td>
+              <td><?php echo $order->restCurrencyEquivalent(); ?></td>
+            </tr>
+          <?php } ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-6 mb1e">
+    <div class="border1 col-xs-12">
+      <h5>Ордера на покупку BTC</h5>
 
+      <p class="flr">Всего <?php echo $orders['total']['buy']; ?> BTC</p>
 
-        <div class="col-xs-12 border1 mb1e">
-            <h4>История сделок:</h4>
-
-            <div style="overflow:auto; max-height: 500px;">
-                <table class="table" style="width: 100%">
-                    <tbody>
-                    <tr class="table-bg">
-                        <th style="width: 110px">Дата</th>
-                        <th>Тип</th>
-                        <th>Цена</th>
-                        <th>Кол-во (BTC)</th>
-                        <th>Всего (USD)</th>
-                    </tr>
-                    <?php foreach($transactions as $tr_id => $transaction) { ?>
-                        <tr>
-                            <td><span><?php echo  $transaction->date ; ?></span></td>
-                            <td><b style="color:<?php if ($transaction->isBTCBuy()) {  
-                                ?>green<?php 
-                                } else { 
-                                ?>red<?php }
-                                ?>">
-                                    <?php if ($transaction->isBTCBuy()) {
-                                    ?>Покупка<?php } else {
-                                    ?>Продажа<?php }  
-                                    ?></b></td>
-                            <td><?php echo  $transaction->src_price ; ?></td>
-                            <td><?php echo  $transaction->srcBTCEquivalent() ; ?> BTC</td>
-                            <td><?php echo  $transaction->srcUSDEquivalent() ; ?> USD</td>
-                        </tr>
-                    <?php }  ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
+      <div style="overflow:auto; max-height: 500px;" class="col-xs-12 np">
+        <table class="table" style="width: 100%">
+          <tbody>
+          <tr class="table-bg">
+            <th>Цена</th>
+            <th>BTC</th>
+            <th>USD</th>
+          </tr>
+          <?php foreach ($orders['buy'] as $no => $order) { ?>
+            <tr<?php if ($order->user == $app->user->id) { ?> style="color: gainsboro; "<?php } ?>>
+              <td><?php echo $order->price; ?></td>
+              <td><?php echo $order->rest; ?></td>
+              <td><?php echo $order->restCurrencyEquivalent(); ?></td>
+            </tr>
+          <?php } ?>
+          </tbody>
+        </table>
+      </div>
 
     </div>
-    <div class="col-md-4 col-xs-12">
-        <div id="userOrders" class="col-xs-12">
-            <h2><?php echo Yii::t('general', 'My open orders'); ?></h2>
-            <?php $this->renderPartial('inc/userOrdersTable', array('userOrders' => $userOrders), false); ?>
-        </div>
+  </div>
+
+
+  <div class="col-xs-12 border1 mb1e">
+    <h4>История сделок:</h4>
+
+    <div style="overflow:auto; max-height: 500px;">
+      <table class="table" style="width: 100%">
+        <tbody>
+        <tr class="table-bg">
+          <th style="width: 110px">Дата</th>
+          <th>Тип</th>
+          <th>Цена</th>
+          <th>Кол-во (BTC)</th>
+          <th>Всего (USD)</th>
+        </tr>
+        <?php foreach ($transactions as $tr_id => $transaction) { ?>
+          <tr>
+            <td><span><?php echo $transaction->date; ?></span></td>
+            <td><b style="color:<?php if ($transaction->isBTCBuy()) {
+                ?>green<?php
+              } else {
+                ?>red<?php }
+              ?>">
+                <?php if ($transaction->isBTCBuy()) {
+                  ?>Покупка<?php } else {
+                  ?>Продажа<?php }
+                ?></b></td>
+            <td><?php echo $transaction->src_price; ?></td>
+            <td><?php echo $transaction->srcBTCEquivalent(); ?> BTC</td>
+            <td><?php echo $transaction->srcUSDEquivalent(); ?> USD</td>
+          </tr>
+        <?php } ?>
+        </tbody>
+      </table>
     </div>
+  </div>
+
+
+</div>
+<div class="col-md-4 col-xs-12">
+  <div id="userOrders" class="col-xs-12">
+    <h2><?php echo Yii::t('general', 'My open orders'); ?></h2>
+    <?php $this->renderPartial('inc/userOrdersTable', array('userOrders' => $userOrders), false); ?>
+  </div>
+</div>
 <script type="text/javascript">
-    $(document).ready(function(){
-        var bindUserOrdersActions = function(){
-            $('#userOrders tr, #userOrders td').contextmenu(function(e){
-                e.preventDefault();
-                e.stopPropagation();
-                contextmenuUserOrders(e);
-            });
-        };
-        bindUserOrdersActions();
-        var contextmenuUserOrders = function (event) {
-            var contextMenu = $('<div class="user-orders-context-menu"></div>');
-            $('#userOrders').append(contextMenu);
-            $('.user-orders-context-menu').offset({left: event.pageX, top : event.pageY});
-            $('.user-orders-context-menu').append($('<a class="user-orders-context-menu-option"><?php echo Yii::t('order', 'Remove'); ?></a>'));
-            setTimeout(function(){ $('.user-orders-context-menu').remove()}, 10000);
-            $('.user-orders-context-menu').click(function(){
-                $(event.target).parents('tr').remove();
-                $(this).remove();
-            });
-        };
+  $(document).ready(function () {
+    var bindUserOrdersActions = function () {
+      $('#userOrders tbody tr').contextmenu(function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        contextmenuUserOrders(e);
+      });
+    };
+    bindUserOrdersActions();
+    var contextmenuUserOrders = function (event) {
+      $('#userOrders .hover').removeClass('hover');
+      $(event.currentTarget).addClass('hover');
+      var contextMenu = $('.user-orders-context-menu');
+      if (!contextMenu.length) {
+        contextMenu = $('<div class="user-orders-context-menu"></div>');
+        $('#userOrders').append(contextMenu);
+        $(contextMenu).append($('<a class="user-orders-context-menu-option"><?php echo Yii::t('order', 'Remove'); ?></a>'));
+      }
+      $(contextMenu).offset({ top: event.pageY});
+//      $(contextMenu).offset({left: event.pageX, top: event.pageY});
+//            setTimeout(function(){ $('.user-orders-context-menu').remove()}, 10000);
+      $(contextMenu).unbind('click').bind('click', function () {
+        $(event.currentTarget).remove();
+        $(this).remove();
+      });
+    };
 
-    });
+  });
 </script>
 
 
