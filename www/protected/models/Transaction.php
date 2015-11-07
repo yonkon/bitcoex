@@ -16,9 +16,46 @@
  */
 class Transaction extends CActiveRecord
 {
-    public static function prepareForPlot($transactions, $lengthSeconds = Helpers::SECONDS_IN_DAY, $timeGroupModule = 5, $timeGroupMeasureItem ='m', $endTime = null, $indexFormat = 'm/d/Y H:i')
+    /**
+     * @param Transaction[] $transactions - transactions array to be grouped
+     * @param integer $lengthSeconds - time lapse in seconds before $endTime to be processed and added to result array. All transactions not in the lapse are ignored. By default processed transactions are considered to be in 24h before the current time.
+     * @param integer $timeGroupModule - parameter sets module to group transactions by according to measure item (passed in $timeGroupMeasureItem). By default transactions are grouped by 5 minutes - $timeGroupModule = 5
+     * @param string $timeGroupMeasureItem - parameter sets measure item to group transactions by. By default transactions are grouped by each minute - $timeGroupModule = 5, $timeGroupMeasureItem = 'm'
+     * @param integer $endTime - time() representation of last transaction date to be processed. Transactions with date after $endTime will be ignred. By default used current timestamp value ( calls time() )
+     * @see time()
+     * @param string $indexFormat Time format, representing date format string for TransactionGroups indexes. By default considered as 'm/d/Y H:i'
+     * @see date()
+     * @return Transaction[] TransactionsGroups as hash array with keys like date formatted strings and values like arrays of Transactions, having date that belongs to date group, represented by key plus aggregated values for OHLCV plot
+     */
+    public static function prepareForPlot($transactions, $lengthSeconds = Helpers::SECONDS_IN_DAY, $timeGroupModule = 2, $timeGroupMeasureItem ='i', $endTime = null, $indexFormat = 'm/d/Y H:i')
     {
-
+        $transactionGroups = self::groupByTime($transactions, $lengthSeconds, $timeGroupModule, $timeGroupMeasureItem, $endTime, $indexFormat);
+        /**
+         * @var Transaction[] $tgItem
+         * @var string $tgIndex
+         */
+        foreach ($transactionGroups as $tgIndex=>$tgItem) {
+            $volume = 0;
+            $open = $tgItem[0]->src_price;
+            $hi = $tgItem[0]->src_price;
+            $close = $tgItem[count($tgItem) -1]->src_price;
+            $low = $tgItem[0]->src_price;
+            foreach ($tgItem as $transaction) {
+                if ($transaction->src_price > $hi) {
+                    $hi = $transaction->src_price;
+                }
+                if ($transaction->src_price < $low) {
+                    $low = $transaction->src_price;
+                }
+                $volume += $transaction->srcUSDEquivalent();
+            }
+            $transactionGroups[$tgIndex]['open'] = $open;
+            $transactionGroups[$tgIndex]['hi'] = $hi;
+            $transactionGroups[$tgIndex]['low'] = $low;
+            $transactionGroups[$tgIndex]['close'] = $close;
+            $transactionGroups[$tgIndex]['volume'] = $volume;
+        }
+        return $transactionGroups;
     }
 
     /**
@@ -38,6 +75,7 @@ class Transaction extends CActiveRecord
          * @var Transaction $transaction
          * @var Transaction[] $tgItem
          */
+        $transactionGroups = array();
         foreach( $transactions as $transaction) {
             $endTime = empty($endTime) ? time() : $endTime;
             $startTime = $endTime - $lengthSeconds;
@@ -48,6 +86,7 @@ class Transaction extends CActiveRecord
                 $transactionGroups[$tIndex][]=$transaction;
             }
         }
+        return $transactionGroups;
     }
 
     /**
@@ -150,6 +189,7 @@ class Transaction extends CActiveRecord
 
     /**
      *@return Wallet
+     * @throws Exception
      */
     public function beforeSave() {
         parent::beforeSave();
@@ -173,8 +213,6 @@ class Transaction extends CActiveRecord
             $dstWallet->available = $dstWallet->money;
         }
         if(!($dstWallet->money >= 0 && $dstWallet->available >= 0)) { throw new Exception( "dstWallet Assertion failed: negative money"); }
-        $srcWalletResult = true;
-        $dstWalletResult = true;
 		if (!$srcWalletResult = $srcWallet->save()) {
             $this->addError('srcWallet', $srcWallet->getErrors());
         }

@@ -1,5 +1,4 @@
-Отображение истории - пишется не кол-во BTC а (summ/price)
-hiстория открытых ордеров
+
 hiстория своих транзакций
 Отмена ордера
 Подтверждение ордера если цена ниже/выше крайних цен на 10%
@@ -32,9 +31,13 @@ _______
 assert(.*);\s*\/\/\s(.*)\);$
 if(!$1) { throw new Exception($2); }
 _______
+add to bootstrap-theme.css & bootstrap.css at end if minified
+/*# sourceMappingURL=bootstrap-theme.css.map */
 
 
 _______________________
 Готово
 ________
  fix Транзакции: src_count и dst_count совпадают при разно цене
+Отображение истории - пишется не кол-во BTC а (summ/price)
+hiстория открытых ордеров

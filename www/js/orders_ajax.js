@@ -113,5 +113,12 @@ $(document).ready(
                 alert("Ошибка: невозможно разобрать ответ сервера, походу сервер пьян и ему пора идти домой!");
             }
         }
+
+        $('canvas, #jqplot').dblclick(function(evt) {
+            if (window.getSelection)
+                window.getSelection().removeAllRanges();
+            else if (document.selection)
+                document.selection.empty();
+        });
     }
 );

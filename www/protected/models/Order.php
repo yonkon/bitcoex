@@ -168,6 +168,7 @@ ORDER BY date ASC");
             /**
              * @var Order $minorOrder - closing order
              * @var Order $majorOrder - matched order for closing order
+             * @var Order $ord - one of found orders
              */
             if ($ord->isBTCBuy()) {
                 //Если предложение покрывает полностью сумму текущего заказа, то закрываем текущий заказ
@@ -353,28 +354,28 @@ ORDER BY date ASC");
         return $summ*$this->price;
     }
 
-    protected function beforeValidate()
-    {
-        $cur_date = $this->date;
-        if (empty($cur_date)) {
-            $cur_date = time();
-        } else {
-            if (!is_numeric($cur_date)) {
-                $cur_date = strtotime($cur_date);
-            }
-        }
-        $this->date = $cur_date;
-        return parent::beforeSave();
-    }
+//    protected function beforeValidate()
+//    {
+//        $cur_date = $this->date;
+//        if (empty($cur_date)) {
+//            $cur_date = time();
+//        } else {
+//            if (!is_numeric($cur_date)) {
+//                $cur_date = strtotime($cur_date);
+//            }
+//        }
+//        $this->date = $cur_date;
+//        return parent::beforeSave();
+//    }
 
-    protected function beforeSave()
-    {
-        $this->date = date('Y-m-d H:i:s', $this->date);
-        return parent::beforeSave();
-    }
-
-    protected function afterSave() {
-        $this->date = strtotime($this->date);
-    }
+//    protected function beforeSave()
+//    {
+//        $this->date = date('Y-m-d H:i:s', $this->date);
+//        return parent::beforeSave();
+//    }
+//
+//    protected function afterSave() {
+//        $this->date = strtotime($this->date);
+//    }
 
 }

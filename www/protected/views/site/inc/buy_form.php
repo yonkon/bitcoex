@@ -10,7 +10,7 @@
 $app = Yii::app();
 
 ?>
-<div id="buy_form" class="border1 col-xs-12 row">
+<div id="buy_form" class="col-xs-12">
     <form action="<?php cecho( $app->createUrl('order/create')); ?>" method="post">
         <input type="hidden" name="src_wallet" value="<?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->id); ?>">
         <input type="hidden" name="dst_wallet" value="<?php if (!empty($wallets['BTC']) )cecho( $wallets['BTC']->id); ?>">

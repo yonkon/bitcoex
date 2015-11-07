@@ -12,6 +12,7 @@
  * @var $last_order         Order
  * @var $orders             Order[]
  * @var $transactions       Transaction[]
+ * @var $userOrders         Order[]
  * @var $transactionGroups  array
  */
 $app = Yii::app();
@@ -31,14 +32,14 @@ $app->clientScript->registerScriptFile("/js/jquery.jplot/plugins/jqplot.cursor.m
 $app->clientScript->registerCssFile('/js/jquery.jplot/jquery.jqplot.css');
 
 //BODY CLOSE SCRIPTS
-$app->clientScript->registerScriptFile("/js/test_plot.js", CClientScript::POS_END);
+//$app->clientScript->registerScriptFile("/js/test_plot.js", CClientScript::POS_END);
 $app->clientScript->registerScriptFile("/js/orders_ajax.js", CClientScript::POS_END );
 $drawPlotInline = $this->renderPartial('inc/js/indexDrawPlotInline', array('transactionGroups' => $transactionGroups), true);
 $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClientScript::POS_END );
 
 
 ?>
-    <div class="col-xs-8">
+    <div class="col-md-8 col-xs-12">
         <div class="col-xs-12 border1 mb1e">
             <span><b>Новости</b></span>
 
@@ -56,7 +57,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
             </div>
 
         </div>
-        <div class="col-xs-6 mb1e">
+        <div class="col-sm-6 col-xs-12 mb1e border1 np">
             <?php if(!$app->user->isGuest)
                 $this->renderPartial('inc/buy_form',
                 array('min_sell_order' => $min_sell_order,
@@ -65,7 +66,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
                     'max_buy_order' => $max_buy_order,
                     'wallets' => $wallets)); ?>
         </div>
-        <div class="col-xs-6 mb1e">
+        <div class="col-sm-6 col-xs-12 mb1e border1 np">
             <?php if(!$app->user->isGuest)
                 $this->renderPartial('inc/sell_form',  array('min_sell_order' => $min_sell_order,
                 'max_sell_order' => $max_sell_order,
@@ -166,9 +167,36 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
 
 
     </div>
-    <div class="col-xs-4">
-
+    <div class="col-md-4 col-xs-12">
+        <div id="userOrders" class="col-xs-12">
+            <h2><?php echo Yii::t('general', 'My open orders'); ?></h2>
+            <?php $this->renderPartial('inc/userOrdersTable', array('userOrders' => $userOrders), false); ?>
+        </div>
     </div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var bindUserOrdersActions = function(){
+            $('#userOrders tr, #userOrders td').contextmenu(function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                contextmenuUserOrders(e);
+            });
+        };
+        bindUserOrdersActions();
+        var contextmenuUserOrders = function (event) {
+            var contextMenu = $('<div class="user-orders-context-menu"></div>');
+            $('#userOrders').append(contextMenu);
+            $('.user-orders-context-menu').offset({left: event.pageX, top : event.pageY});
+            $('.user-orders-context-menu').append($('<a class="user-orders-context-menu-option"><?php echo Yii::t('order', 'Remove'); ?></a>'));
+            setTimeout(function(){ $('.user-orders-context-menu').remove()}, 10000);
+            $('.user-orders-context-menu').click(function(){
+                $(event.target).parents('tr').remove();
+                $(this).remove();
+            });
+        };
+
+    });
+</script>
 
 
 

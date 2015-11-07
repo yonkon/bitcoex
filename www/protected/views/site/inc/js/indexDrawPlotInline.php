@@ -14,10 +14,11 @@ if (!empty($transactionGroups)) {
 $stockData = "[ {$stockData} ]";
 ?>
     var stockData = <?php echo $stockData;?> ;
+    var plot;
 
     var drawOHLCV = function(values) {
         $.jqplot.config.enablePlugins = true;
-        plot = $.jqplot('jqplot', [values], {
+        window.plot = $.jqplot('jqplot', [values], {
             title: 'Котировки',
             axesDefaults: {},
             axes: {
@@ -60,3 +61,9 @@ $stockData = "[ {$stockData} ]";
         }
     }
     drawOHLCV(stockData);
+
+$('document').ready(function(){
+    $(window).resize(function(){
+        window.plot.replot({resetAxis : true});
+    });
+});

@@ -121,6 +121,14 @@ body {
   padding-left: 1em;
 }
 
+.pr0 {
+  padding-right: 0;
+}
+
+.pl0 {
+  padding-left: 0;
+}
+
 
 .price-li {
     float: left;
@@ -183,10 +191,11 @@ body {
 
 .order-h {
   background: #f8f8ff url("../img/order_h.png");
-  height: 50px;
+  min-height: 50px;
   padding-top: 5px;
   border: 1px solid #ebebeb;
   border-radius: 3px;
+  background-size: contain;
 }
 
 .fll {
@@ -253,4 +262,27 @@ body {
 
 .table-bg {
   background: #f8f8ff url("../img/order_h.png");
+}
+
+canvas, #jqplot {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.order-buy {
+    color: green;
+}
+
+.order-sell {
+    color: red;
+}
+
+.user-orders-context-menu {
+  position: absolute;
+  padding: 1em;
+  background: grey;
 }

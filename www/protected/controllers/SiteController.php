@@ -62,6 +62,9 @@ class SiteController extends Controller
                 'limit' => 1
             )
         );
+        /**
+         * @var Order[] $active_orders
+         */
         $active_orders = Order::model()->findAll(array(
             'condition' => 'status=0',
 //            "order" => 'summ asc',
@@ -75,7 +78,6 @@ class SiteController extends Controller
                 'buy' => 0,
             )
         );
-        $transactionGroups = array();
         foreach ($active_orders as $order) {
             if ($order->isBTCSell()) {
                 $orders['sell'][] = $order;
@@ -94,51 +96,16 @@ class SiteController extends Controller
             'limit' => 500
         ));
 
+        $transactionGroups = Transaction::prepareForPlot($transactions);
 
-
-        Transaction::prepareForPlot($transactions,  $lengthSeconds,  $timeGroupInterval, $endTime, $indexFormat );
-        Transaction::groupByTime($transactions,  $lengthSeconds,  $timeGroupInterval, $endTime, $indexFormat);
-        /**
-         * @var Transaction $transaction
-         * @var Transaction[] $tgItem
-         */
-        foreach( $transactions as $transaction) {
-            $now = time();
-            $dayBefore = $now - Helpers::SECONDS_IN_DAY;
-            $tr_time = strtotime($transaction->date);
-            if($dayBefore <= $tr_time) { //Ограничиваем вывод транзакций на график 24 чавсами
-                $tIndex = date('m/d/Y H:i', $tr_time); //group transactions by 1 minute
-                $transactionGroups[$tIndex][]=$transaction;
-            }
-        }
-
-        foreach ($transactionGroups as $tgIndex=>$tgItem) {
-            $volume = 0;
-            $open = $tgItem[0]->src_price;
-            $hi = $tgItem[0]->src_price;
-            $close = $tgItem[count($tgItem) -1]->src_price;
-            $low = $tgItem[0]->src_price;
-            foreach ($tgItem as $transaction) {
-                if ($transaction->src_price > $hi) {
-                    $hi = $transaction->src_price;
-                }
-                if ($transaction->src_price < $low) {
-                    $low = $transaction->src_price;
-                }
-                $volume += $transaction->srcUSDEquivalent();
-            }
-            $transactionGroups[$tgIndex]['open'] = $open;
-            $transactionGroups[$tgIndex]['hi'] = $hi;
-            $transactionGroups[$tgIndex]['low'] = $low;
-            $transactionGroups[$tgIndex]['close'] = $close;
-            $transactionGroups[$tgIndex]['volume'] = $volume;
-        }
-
+        $userOrders = array();
         if (Yii::app()->user->isGuest) {
             $user = null;
         } else {
+            $uid = Yii::app()->user->id;
             $user = User::model();
-            $user = $user->findByPk(Yii::app()->user->id);
+            $user = $user->findByPk($uid);
+            $userOrders = Order::model()->findAll("user={$uid} AND status != " . Order::STATUS_CLOSED);
             $wallets = Wallet::model()->findAllByAttributes(array('user_id'=>$user->id));
             foreach ($wallets as $wallet) {
                 if ( in_array($wallet->type , Wallet::$WALLET_CURRENCY_USD)) {
@@ -160,7 +127,8 @@ class SiteController extends Controller
             'last_order'            => $last_order,
             'orders'                => $orders,
             'transactions'          => $transactions,
-            'transactionGroups'     => $transactionGroups
+            'transactionGroups'     => $transactionGroups,
+            'userOrders'            => $userOrders
             )
         );
 
