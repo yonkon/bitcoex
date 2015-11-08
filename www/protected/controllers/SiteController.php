@@ -105,7 +105,7 @@ class SiteController extends Controller
             $uid = Yii::app()->user->id;
             $user = User::model();
             $user = $user->findByPk($uid);
-            $userOrders = Order::model()->findAll("user={$uid} AND status != " . Order::STATUS_CLOSED);
+            $userOrders = Order::model()->findAll("user={$uid} AND status = " . Order::STATUS_NEW);
             $wallets = Wallet::model()->findAllByAttributes(array('user_id'=>$user->id));
             foreach ($wallets as $wallet) {
                 if ( in_array($wallet->type , Wallet::$WALLET_CURRENCY_USD)) {

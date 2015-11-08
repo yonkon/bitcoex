@@ -53,6 +53,54 @@ class OrderController extends Controller
         $this->render('view');
     }
 
+    /**
+     * @param integer $id Order ID
+     * @throws Exception Throws if order could not find
+     */
+    public function actionCancel($id)
+    {
+      /**
+      * @var Order $order Found order
+      * @var CWebApplication $app Yii instance
+      */
+      $app = Yii::app();
+        if($app->user->isGuest) {
+            $this->redirect($app->createUrl('user/login'));
+        }
+        $uid = Yii::app()->user->id;
+        $status = 'OK';
+        $errors = array();
+        if (empty($id)) {
+            $status = 'error';
+            $errorMsg = Yii::t('error', 'Undefined order id');
+            if(empty($_REQUEST['ajax'])) {
+                throw new InvalidArgumentException($errorMsg);
+            } else {
+                $errors['order'][] = array('order', $errorMsg);
+            }
+        }
+        $order = Order::model()->find("id = {$id} AND user = $uid");
+        if (!$order || empty($order)) {
+            $status = 'error';
+            $errorMsg = Yii::t('error', 'Could not find user order');
+            if(empty($_REQUEST['ajax'])) {
+                throw new Exception($errorMsg);
+            } else {
+                $errors['order'][] = array('order', $errorMsg);
+            }
+        }
+        $order->status = Order::STATUS_CANCELED;
+        if (!$order->save()) {
+          $errors['order'] = array_merge($errors['order'], $order->getErrors());
+        }
+        echo json_encode(array(
+          'status' => $status,
+          'errors' => $errors
+        ));
+        die();
+
+    }
+
     // Uncomment the following methods and override them if needed
     /*
     public function filters()

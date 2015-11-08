@@ -22,8 +22,9 @@ class Order extends CActiveRecord
 {
 	const STATUS_NEW = 0;
 	const STATUS_CLOSED = 1;
+  const STATUS_CANCELED = 2;
 
-	/**
+    /**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -130,7 +131,6 @@ class Order extends CActiveRecord
 
 	public function processCurrentBids()
 	{
-
         $currentOrders = Order::model();
         $operation = "=";
         if ($this->isBTCBuy()) {
@@ -138,11 +138,12 @@ class Order extends CActiveRecord
         } elseif($this->isBTCSell()) {
             $operation = ">=";
         }
+    $status_new = Order::STATUS_NEW;
         $currentOrders = $currentOrders->findAllBySql(
             "SELECT * FROM {$this->tableName()}
 WHERE dst_wallet_type={$this->src_wallet_type} AND
 price {$operation} {$this->price} AND
-status = {$this->status} AND
+status = {$status_new} AND
 user != {$this->user}
 ORDER BY date ASC");
         if (empty($currentOrders)) {

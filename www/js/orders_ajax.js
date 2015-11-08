@@ -1,6 +1,47 @@
 var COMISSION_RATIO_BUY = 0.00;
 var COMISSION_RATIO_SELL = 0.00;
 
+function processAjaxSuccess(data, cb, callOnError) {
+    try {
+        data = JSON.parse(data);
+        if (data.status == "OK") {
+            if (typeof cb != 'function') {
+                window.location.reload();
+            } else {
+                cb(data);
+            }
+        } else {
+            if (typeof callOnError != 'undefined' && callOnError) {
+                if(typeof cb == 'function') {
+                    cb(data);
+                }
+            }
+            var errorText = "";
+            if (data.errors.order) {
+                for(var index in data.errors.order) {
+                    if (data.errors.order.hasOwnProperty(index)) {
+                        var attr = data.errors.order[index];
+                        errorText += index + ": " + attr + "\n" ;
+                    }
+                }
+            }
+            if (errorText.length) {
+                alert(errorText);
+            } else {
+                errorText = "Площадка дала ответ со статусом \"" + data.status + "\", но деталей ошибки не последовало. Скорее всего у площадки начались \"эти дни\". Просим извинения и подорждать некоторое время";
+                alert(errorText);
+            }
+        }
+    } catch(e) {
+        if(typeof cb == 'function') {
+            if (typeof callOnError != 'undefined' && callOnError) {
+                cb(data);
+            }
+        }
+        alert("Ошибка: невозможно разобрать ответ сервера, походу сервер пьян и ему пора идти домой!");
+    }
+}
+
 $(document).ready(
 
     function(){
@@ -34,7 +75,7 @@ $(document).ready(
                     type : 'post',
                     data : form_data
                 }).success(function(data){
-                    processBuySellAjaxSuccess(data);
+                    processAjaxSuccess(data);
                 });
             }
         }
@@ -71,34 +112,6 @@ $(document).ready(
                 e.stopPropagation();
             }
         );
-
-        function processBuySellAjaxSuccess(data) {
-            try {
-                data = JSON.parse(data);
-                if (data.status == "OK") {
-                    window.location.reload();
-                } else {
-                    var errorText = "";
-
-                    if (data.errors.order) {
-                        for(var index in data.errors.order) {
-                            if (data.errors.order.hasOwnProperty(index)) {
-                                var attr = data.errors.order[index];
-                                errorText += index + ": " + attr + "\n" ;
-                            }
-                        }
-                    }
-                    if (errorText.length) {
-                        alert(errorText);
-                    } else {
-                        errorText = "Площадка дала ответ со статусом \"" + data.status + "\", но деталей ошибки не последовало. Скорее всего у площадки начались \"эти дни\". Просим извинения и подорждать некоторое время";
-                        alert(errorText);
-                    }
-                }
-            } catch(e) {
-                alert("Ошибка: невозможно разобрать ответ сервера, походу сервер пьян и ему пора идти домой!");
-            }
-        }
 
         $('canvas, #jqplot').dblclick(function(evt) {
             if (window.getSelection)

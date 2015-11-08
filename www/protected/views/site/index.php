@@ -78,8 +78,8 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
 
   <div class="clearfix">&nbsp;</div>
 
-  <div class="col-xs-6 mb1e">
-    <div class="border1 col-xs-12 row">
+  <div class="col-xs-12 col-sm-6 mb1e np">
+    <div class="border1 col-xs-12">
       <h5>Ордера на продажу BTC</h5>
 
       <p class="flr">Всего <?php echo $orders['total']['sell']; ?> BTC</p>
@@ -104,7 +104,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
       </div>
     </div>
   </div>
-  <div class="col-xs-6 mb1e">
+  <div class="col-xs-12 col-sm-6 mb1e np">
     <div class="border1 col-xs-12">
       <h5>Ордера на покупку BTC</h5>
 
@@ -134,30 +134,32 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
 
 
   <div class="col-xs-12 border1 mb1e">
-    <h4>История сделок:</h4>
-
-    <div style="overflow:auto; max-height: 500px;">
+    <h4><?php echo Yii::t('general', 'История сделок:'); ?></h4>
+<section class="fixed-header table-bg">
+    <div style="overflow:auto; max-height: 300px;">
       <table class="table" style="width: 100%">
-        <tbody>
+        <thead>
         <tr class="table-bg">
-          <th style="width: 110px">Дата</th>
-          <th>Тип</th>
-          <th>Цена</th>
-          <th>Кол-во (BTC)</th>
-          <th>Всего (USD)</th>
+          <th><?php echo Yii::t('general', 'Дата'); ?><div><?php echo Yii::t('general', 'Дата'); ?></div></th>
+          <th><?php echo Yii::t('general', 'Тип'); ?><div><?php echo Yii::t('general', 'Тип'); ?></div></th>
+          <th><?php echo Yii::t('general', 'Цена'); ?><div><?php echo Yii::t('general', 'Цена'); ?></div></th>
+          <th><?php echo Yii::t('general', 'Кол-во (BTC)'); ?><div><?php echo Yii::t('general', 'Кол-во (BTC)'); ?></div></th>
+          <th><?php echo Yii::t('general', 'Всего (USD)'); ?><div><?php echo Yii::t('general', 'Всего (USD)'); ?></div></th>
         </tr>
+        </thead>
+        <tbody>
         <?php foreach ($transactions as $tr_id => $transaction) { ?>
           <tr>
-            <td><span><?php echo $transaction->date; ?></span></td>
-            <td><b style="color:<?php if ($transaction->isBTCBuy()) {
+            <td><span><?php echo date('d/m H:i:s', $transaction->date); ?></span></td>
+            <td>
+              <b style="color:<?php if ($transaction->isBTCBuy()) {
                 ?>green<?php
               } else {
                 ?>red<?php }
               ?>">
-                <?php if ($transaction->isBTCBuy()) {
-                  ?>Покупка<?php } else {
-                  ?>Продажа<?php }
-                ?></b></td>
+                <?php echo Yii::t('general', $transaction->isBTCBuy()?'Покупка':'Продажа');?>
+              </b>
+            </td>
             <td><?php echo $transaction->src_price; ?></td>
             <td><?php echo $transaction->srcBTCEquivalent(); ?> BTC</td>
             <td><?php echo $transaction->srcUSDEquivalent(); ?> USD</td>
@@ -166,6 +168,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
         </tbody>
       </table>
     </div>
+</section>
   </div>
 
 
@@ -178,36 +181,6 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
   </div>
 <?php } ?>
 </div>
-<script type="text/javascript">
-  $(document).ready(function () {
-    var bindUserOrdersActions = function () {
-      $('#userOrders tbody tr').contextmenu(function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        contextmenuUserOrders(e);
-      });
-    };
-    bindUserOrdersActions();
-    var contextmenuUserOrders = function (event) {
-      $('#userOrders .hover').removeClass('hover');
-      $(event.currentTarget).addClass('hover');
-      var contextMenu = $('.user-orders-context-menu');
-      if (!contextMenu.length) {
-        contextMenu = $('<div class="user-orders-context-menu"></div>');
-        $('#userOrders').append(contextMenu);
-        $(contextMenu).append($('<a class="user-orders-context-menu-option"><?php echo Yii::t('order', 'Remove'); ?></a>'));
-      }
-      $(contextMenu).offset({ top: event.pageY});
-//      $(contextMenu).offset({left: event.pageX, top: event.pageY});
-//            setTimeout(function(){ $('.user-orders-context-menu').remove()}, 10000);
-      $(contextMenu).unbind('click').bind('click', function () {
-        $(event.currentTarget).remove();
-        $(this).remove();
-      });
-    };
-
-  });
-</script>
 
 
 

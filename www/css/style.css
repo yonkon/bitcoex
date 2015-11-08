@@ -329,3 +329,55 @@ canvas, #jqplot {
  background: rgba(75, 86, 222, 0.7);
   text-decoration: none;
 }
+
+
+section.fixed-header table th {
+  height: 0 !important;
+  line-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  color: transparent !important;
+  border: none !important;
+  white-space: nowrap;
+}
+
+section.fixed-header  table th div {
+  position: absolute;
+  background: transparent;
+  color: initial;
+  padding: 9px 25px;
+  top: 0;
+  margin-left: -25px;
+  line-height: normal;
+  border: none;
+}
+
+section.fixed-header th:first-child div {
+  border: none;
+}
+
+section.fixed-header {
+  position: relative;
+  border: none;
+  padding-top: 37px;
+  background: none;
+}
+
+section.fixed-header:before {
+  content: ' ';
+  display: block;
+  background: #f8f8ff url("../img/order_h.png");
+  height: 37px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+section.fixed-header.positioned {
+  position: absolute;
+  top:100px;
+  left:100px;
+  width:800px;
+  box-shadow: 0 0 15px #333;
+}
+
