@@ -15,6 +15,9 @@ FLOAT -> BIGINT хранение сумм в БД
 цена по клику на открітій ордер летит в форму оформления ордера
 
 
+Cambria
+
+
 SELECT t.src_wallet,  t.dst_wallet, t.src_count, t.src_price, t.src_count, t.dst_price,
 IF(sw.type=1, src_count, src_price*src_count) AS srcUSD,
 IF(dw.type=1, dst_count, dst_price*src_count) AS dstUSD,

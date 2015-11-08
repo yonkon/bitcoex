@@ -79,7 +79,8 @@ class Transaction extends CActiveRecord
         foreach( $transactions as $transaction) {
             $endTime = empty($endTime) ? time() : $endTime;
             $startTime = $endTime - $lengthSeconds;
-            $tr_time = strtotime($transaction->date);
+//            $tr_time = strtotime($transaction->date); //убрано в связи с изменением типа date (TIMESTAMP => INT(11)))
+            $tr_time = $transaction->date; //убрано в связи с изменением типа date (TIMESTAMP => INT(11)))
             $tr_time = Helpers::roundTimeUp($tr_time, $timeGroupModule, $timeGroupMeasureItem);
             if($startTime <= $tr_time) { //Ограничиваем вывод транзакций на график 24 чавсами
                 $tIndex = date($indexFormat, $tr_time); //group transactions by 1 minute

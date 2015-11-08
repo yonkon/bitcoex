@@ -1,18 +1,48 @@
+var COMISSION_RATIO_BUY = 0.00;
+var COMISSION_RATIO_SELL = 0.00;
+
 $(document).ready(
+
     function(){
+
+        function processBuySell(type, action) {
+            if (action != 'calculate' && action != 'process') {
+                throw new EventException('Invalid operation action specified');
+            }
+            if(type == 'buy') {
+                var commission_ratio = COMISSION_RATIO_BUY;
+            } else if (type == 'sell'){
+                var commission_ratio = COMISSION_RATIO_SELL;
+            } else {
+                throw new EventException('Invalid operation type specified');
+            }
+            var id_prefix ='#'+type;
+            var count = $(id_prefix + '_count').val();
+            var price = $(id_prefix + '_price').val();
+            var total = parseFloat(count) * parseFloat(price);
+            var commission = commission_ratio * total;
+            var total_usr = total - commission;
+            $(id_prefix + '_total').text(total_usr);
+            $(id_prefix + '_commission').text(commission);
+            if (action == 'process') {
+                var $current_form = $(id_prefix + '_form form');
+                var form_data = $current_form.serializeArray();
+                form_data['user'] = uid;
+                //$buy_form_form.submit();
+                $.ajax({
+                    url : $current_form.attr('action'),
+                    type : 'post',
+                    data : form_data
+                }).success(function(data){
+                    processBuySellAjaxSuccess(data);
+                });
+            }
+        }
+
         var uid = $('#user_id').val();
-        var $buy_form = $('buy_form');
-        var $sell_form = $('sell_form');
         $('#buy_calculate').click(
             function(e) {
-                buy_count = $('#buy_count').val();
-                buy_price = $('#buy_price').val();
-                commission_ratio = 0.01;
-                buy_total = parseFloat(buy_count) * parseFloat(buy_price);
-                commission = commission_ratio*buy_total;
-                buy_total_usr = buy_total - commission;
-                $('#buy_total').text(buy_total_usr);
-                $('#buy_commission').text(commission);
+                processBuySell('buy', 'calculate');
                 e.preventDefault();
                 e.stopPropagation();
             }
@@ -20,26 +50,7 @@ $(document).ready(
 
         $('#buy_process').click(
             function(e) {
-                var $buy_form_form = $('#buy_form form');
-
-                buy_count = $('#buy_count').val();
-                buy_price = $('#buy_price').val();
-                commission_ratio = 0.01;
-                buy_total = parseFloat(buy_count) * parseFloat(buy_price);
-                commission = commission_ratio*buy_total;
-                buy_total_usr = buy_total - commission;
-                $('#buy_total').text(buy_total_usr);
-                $('#buy_commission').text(commission);
-                var form_data = $buy_form_form.serializeArray();
-                form_data['user'] = uid;
-                //$buy_form_form.submit();
-                $.ajax({
-                    url : $buy_form_form.attr('action'),
-                    type : 'post',
-                    data : form_data
-                }).success(function(data){
-                    processBuySellAjaxSuccess(data);
-                });
+               processBuySell('buy', 'process');
                 e.preventDefault();
                 e.stopPropagation();
             }
@@ -48,39 +59,14 @@ $(document).ready(
 
         $('#sell_calculate').click(
             function(e) {
-                sell_count = $('#sell_count').val();
-                sell_price = $('#sell_price').val();
-                commission_ratio = 0.01;
-                commission = commission_ratio*sell_count;
-                sell_total_usr = parseFloat(sell_count) - commission;
-                sell_total = sell_total_usr * parseFloat(sell_price);
-                $('#sell_total').text(sell_total);
-                $('#sell_commission').text(commission);
+                processBuySell('sell', 'calculate');
                 e.preventDefault();
                 e.stopPropagation();
             }
         );
         $('#sell_process').click(
             function(e) {
-                var $sell_form_form = $('#sell_form form');
-                sell_count = $('#sell_count').val();
-                sell_price = $('#sell_price').val();
-                commission_ratio = 0.01;
-                commission = commission_ratio*sell_count;
-                sell_total_usr = parseFloat(sell_count) - commission;
-                sell_total = sell_total_usr * parseFloat(sell_price);
-                $('#sell_total').text(sell_total);
-                $('#sell_commission').text(commission);
-                var form_data = $sell_form_form.serializeArray();
-                form_data['user'] = uid;
-                //$buy_form_form.submit();
-                $.ajax({
-                    url : $sell_form_form.attr('action'),
-                    type : 'post',
-                    data : form_data
-                }).success(function(data){
-                    processBuySellAjaxSuccess(data);
-                });
+                processBuySell('sell', 'process');
                 e.preventDefault();
                 e.stopPropagation();
             }

@@ -164,7 +164,7 @@ ORDER BY date ASC");
             // и передача в обратном направлении
             $forward_ta = new Transaction();
             $reverse_ta = new Transaction();
-            $transaction_date = date('Y-m-d H:i:s', time() );
+            $transaction_date = time();
             /**
              * @var Order $minorOrder - closing order
              * @var Order $majorOrder - matched order for closing order

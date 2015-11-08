@@ -171,10 +171,12 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
 
 </div>
 <div class="col-md-4 col-xs-12">
-  <div id="userOrders" class="col-xs-12">
+<?php if (!$app->user->isGuest) {
+  ?><div id="userOrders" class="col-xs-12">
     <h2><?php echo Yii::t('general', 'My open orders'); ?></h2>
     <?php $this->renderPartial('inc/userOrdersTable', array('userOrders' => $userOrders), false); ?>
   </div>
+<?php } ?>
 </div>
 <script type="text/javascript">
   $(document).ready(function () {

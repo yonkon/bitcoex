@@ -42,7 +42,7 @@ $app = Yii::app();
             <div class="col-xs-7">
                 <p class="m1e"> Last Price: <b>279.568 USD</b> Low: <b>277 USD</b> High: <b>282.9869 USD</b></p>
 
-                <p class="m1e"> Volume: <b>5275 BTC / 1476257 USD</b> Server Time: <b>04.08.15 02:34</b></p>
+                <p class="m1e"> Volume: <b>5275 BTC / 1476257 USD</b> Server Time: <b><?php echo date('d.m.Y H:i');?></b></p>
             </div>
             <div class="col-xs-3">
                 <form>
