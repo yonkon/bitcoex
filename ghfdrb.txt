@@ -2,11 +2,11 @@
 hiстория своих транзакций
 Отмена ордера
 Подтверждение ордера если цена ниже/выше крайних цен на 10%
-Вывести availalbe на страницу
 AJAX
-перевод с tpl на php
 UPDATE ордера - не писать в поле status, если status != ORDER_CLOSED
 //todo проверить фикс транзакций
+//Проверить необходимость userToken для проведения операций
+//Определить безопасность при оформлении заказа и транзакций - есть ли возможность подставить чужой кошелек или ордер
 
 ____________________________________________________
 На будущее
@@ -14,17 +14,16 @@ FLOAT -> BIGINT хранение сумм в БД
 �?стория заказов в отдельную страницу
 цена по клику на открітій ордер летит в форму оформления ордера
 
-
-Cambria
-
-
+_______________________________________
+Полезные запросы
+_____________
 SELECT t.src_wallet,  t.dst_wallet, t.src_count, t.src_price, t.src_count, t.dst_price,
 IF(sw.type=1, src_count, src_price*src_count) AS srcUSD,
 IF(dw.type=1, dst_count, dst_price*src_count) AS dstUSD,
 IF(sw.type=2, src_count, dst_price/src_count) AS srcBTC,
 IF(dw.type=2, dst_count, src_price/src_count) AS dstBTC
 FROM `tbl_transaction` t join tbl_wallet sw on sw.id = t.src_wallet join tbl_wallet dw on dw.id = t.dst_wallet
-
+____________
 UPDATE `tbl_order` SET rest = 0, status=1 WHERE 1;
 UPDATE `tbl_wallet` SET `money`=10000,`available`=10000 WHERE 1;
 
@@ -37,6 +36,10 @@ _______
 add to bootstrap-theme.css & bootstrap.css at end if minified
 /*# sourceMappingURL=bootstrap-theme.css.map */
 
+_____________________________________
+Логотип
+_______
+Шрифт "S"  в долларе лого - Cambria, полужирный
 
 _______________________
 Готово
@@ -44,3 +47,6 @@ ________
  fix Транзакции: src_count и dst_count совпадают при разно цене
 Отображение истории - пишется не кол-во BTC а (summ/price)
 hiстория открытых ордеров
+перевод с tpl на php
+Перевод ассертов в эксепшны
+Вывести availalbe на страницу
