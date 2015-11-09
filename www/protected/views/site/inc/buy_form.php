@@ -24,8 +24,11 @@ $app = Yii::app();
             </div>
             <div class="col-xs-6">
                 <span>Min/Max  цена:</span>
-
-                <p><b><?php if (!empty($min_sell_order) ) cecho($min_sell_order->price); ?>/<?php if (!empty($max_sell_order) )cecho( $max_sell_order->price); ?> USD</b></p>
+                <p>
+                    <b class="price-minimax">
+                        <?php if (!empty($min_sell_order) ) cecho($min_sell_order->price); ?>/<?php if (!empty($max_sell_order) )cecho( $max_sell_order->price); ?> USD
+                    </b>
+                </p>
             </div>
         </div>
         <table class="col-xs-12 order-t">
@@ -56,8 +59,15 @@ $app = Yii::app();
                     <a href="" id="buy_calculate" class="button" style="float: left;">Подсчитать</a>
 
                     <div class=""></div>
-                    <a href="" id="buy_process" class="button" style="float: right;">Купить BTC</a>
-
+                    <a href="#"
+                       id="buy_process"
+                       class="button"
+                       style="float: right;"
+                       data-min-price="<?php if (!empty($min_sell_order) ) cecho($min_sell_order->price); ?>"
+                       data-max_price="<?php if (!empty($max_buy_order) ) cecho( $max_buy_order->price); ?>"
+                        >
+                        Купить BTC
+                    </a>
                 </td>
             </tr>
             </tbody>

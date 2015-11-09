@@ -56,7 +56,15 @@ $app = Yii::app();
                 <a href="" id="sell_calculate" class="button" style="float: left;">Подсчитать</a>
 
                 <div class=""></div>
-                <a href="" id="sell_process" class="button" style="float: right;">Продать BTC</a>
+                <a href="#"
+                   id="sell_process"
+                   class="button"
+                   style="float: right;"
+                   data-min-price="<?php if (!empty($min_buy_order) ) cecho($min_buy_order->price); ?>"
+                   data-max_price="<?php if (!empty($max_sell_order) )cecho( $max_sell_order->price); ?>">
+                >
+                    Продать BTC
+                </a>
 
             </td>
         </tr>

@@ -50,10 +50,11 @@ $(document).ready(
             if (action != 'calculate' && action != 'process') {
                 throw new EventException('Invalid operation action specified');
             }
+            var commission_ratio = 0;
             if(type == 'buy') {
-                var commission_ratio = COMISSION_RATIO_BUY;
+                commission_ratio = COMISSION_RATIO_BUY;
             } else if (type == 'sell'){
-                var commission_ratio = COMISSION_RATIO_SELL;
+                commission_ratio = COMISSION_RATIO_SELL;
             } else {
                 throw new EventException('Invalid operation type specified');
             }
@@ -67,9 +68,23 @@ $(document).ready(
             $(id_prefix + '_commission').text(commission);
             if (action == 'process') {
                 var $current_form = $(id_prefix + '_form form');
+                var $current_btn = $current_form.find(id_prefix+'_process');
+                var min_price = $current_btn.data('min_price');
+                var max_price = $current_btn.data('max_price');
+                if (min_price != 'undefined' &&
+                    parseFloat(min_price)*0.9 > parseFloat(price) &&
+                        !confirm('Your price is 10% less than current minimum. Confirm order?')
+                ) {
+                    return;
+                }
+                if (max_price != 'undefined' &&
+                    parseFloat(max_price)*1.1 < parseFloat(price) &&
+                    !confirm('Your price is 10% more than current minimum. Confirm order?')
+                ) {
+                    return;
+                }
                 var form_data = $current_form.serializeArray();
                 form_data['user'] = uid;
-                //$buy_form_form.submit();
                 $.ajax({
                     url : $current_form.attr('action'),
                     type : 'post',
