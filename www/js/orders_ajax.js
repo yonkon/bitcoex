@@ -134,5 +134,18 @@ $(document).ready(
             else if (document.selection)
                 document.selection.empty();
         });
+
+        function updateOrders(date) {
+            $.ajax({
+                url : 'order/getChanges',
+                data : {
+                    date : date,
+                    ajax : true
+                },
+                success : function(response) {
+                    var res = JSON.parse(response);
+                }
+            });
+        }
     }
 );

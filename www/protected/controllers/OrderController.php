@@ -101,6 +101,18 @@ class OrderController extends Controller
 
     }
 
+    public function actionGetChanges() {
+      if (empty($_REQUEST['ajax'])) {
+        $this->redirect(Yii::app()->createUrl('site/index'));
+      }
+      if (empty($_REQUEST['date'])) {
+        $date = 0;
+      } else {
+        $date = $_REQUEST['date'];
+      }
+
+    }
+
     // Uncomment the following methods and override them if needed
     /*
     public function filters()
