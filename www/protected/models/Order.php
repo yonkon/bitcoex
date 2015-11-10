@@ -355,6 +355,18 @@ ORDER BY date ASC");
         return $summ*$this->price;
     }
 
+    public function cancel()
+    {
+        $this->status = self::STATUS_CANCELED;
+        if ($this->isBTCBuy()) {
+            $this->srcWallet->available += $this->restCurrencyEquivalent();
+        } elseif ($this->isBTCSell()) {
+            $this->srcWallet->available += $this->restCryptoEquivalent();
+        }
+
+        $this->srcWallet->available += $this->rest;
+    }
+
 //    protected function beforeValidate()
 //    {
 //        $cur_date = $this->date;

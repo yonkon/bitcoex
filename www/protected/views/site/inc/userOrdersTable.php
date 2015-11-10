@@ -42,6 +42,40 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
+      function modalDialog(messageHeader, messageText, buttons) {
+          var modalHtml = '<div class="modal show">\
+              <div class="modal-dialog">\
+              <div class="modal-content">\
+              <div class="modal-header">\
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
+          <h4 class="modal-title">'+messageHeader+'</h4>\
+          </div>';
+          if( typeof messageText != 'undefined' && messageText) {
+              modalHtml += '<div class="modal-body"><p>'+ messageText + '</p></div>';
+          }
+          modalHtml += '<div class="modal-footer">';
+          modalHtml += '</div>\
+          </div>\
+          </div>\
+          </div>';
+      $modal = $(modalHtml);
+          $modalFooter = $modal.find('.modal-footer');
+          for (var b in buttons) {
+              if(buttons.hasOwnProperty(b)) {
+                  $btn = $('<button type="button" class="btn btn-default" data-dismiss="modal">'+b+'</button>');
+                  $btn.click(function(e) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      buttons[b](arguments);
+                      $modal.addClass('fade').remove();
+                  });
+                  $modalFooter.append($btn);
+              }
+          }
+          $modal.appendTo(document.body);
+          $modal.find('.close').click(function(e){e.preventDefault();e.stopPropagation(); $modal.addClass('fade').remove();});
+      }
+
     var bindUserOrdersActions = function () {
       $('#userOrders tbody tr').contextmenu(function (e) {
         e.preventDefault();
@@ -51,9 +85,9 @@
     };
     bindUserOrdersActions();
     var contextmenuUserOrders = function (event) {
-      $('#userOrders .hover').removeClass('hover'); //убираем подсветку всех строк таблицы
+      $('#userOrders .hover').removeClass('hover'); //СѓР±РёСЂР°РµРј РїРѕРґСЃРІРµС‚РєСѓ РІСЃРµС… СЃС‚СЂРѕРє С‚Р°Р±Р»РёС†С‹
       var $currentRow = $(event.currentTarget);
-      $currentRow.addClass('hover'); //подсвечиваем текущую строку
+      $currentRow.addClass('hover'); //РїРѕРґСЃРІРµС‡РёРІР°РµРј С‚РµРєСѓС‰СѓСЋ СЃС‚СЂРѕРєСѓ
       var contextMenu = $('.user-orders-context-menu');
       if (!contextMenu.length) {
         contextMenu = $('<div class="user-orders-context-menu"></div>');
@@ -64,17 +98,23 @@
       $(contextMenu).unbind('click').bind('click', function () {
         var oid = $currentRow.data('oid');
         var $this = $(this); //Context menu
-        $.ajax({
-          url: '/order/cancel/'+oid,
-          data: {ajax : true},
-          method: 'post',
-          success : function(data) {
-            processAjaxSuccess(data, function(data){
-              $currentRow.remove();
-              $this.remove();
-            });
-          }
-        });
+          modalDialog('<?php echo Yii::t('order', 'Remove order?'); ?>', null, {
+              '<?php echo Yii::t('general', 'No'); ?>' : function(){ $this.remove();},
+              '<?php echo Yii::t('general', 'Yes'); ?>' : function(){
+                  $.ajax({
+                      url: '/order/cancel/'+oid,
+                      data: {ajax : true},
+                      method: 'post',
+                      success : function(data) {
+                          processAjaxSuccess(data, function(data){
+                              $currentRow.remove();
+                              $this.remove();
+                          });
+                      }
+                  });
+              }
+          });
+
       });
     };
 

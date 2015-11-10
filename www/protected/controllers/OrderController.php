@@ -90,7 +90,7 @@ class OrderController extends Controller
             }
         }
         $order->status = Order::STATUS_CANCELED;
-        if (!$order->save()) {
+        if (!$order->cancel()) {
           $errors['order'] = array_merge($errors['order'], $order->getErrors());
         }
         echo json_encode(array(
