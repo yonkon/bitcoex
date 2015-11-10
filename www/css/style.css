@@ -345,9 +345,8 @@ section.fixed-header  table th div {
   position: absolute;
   background: transparent;
   color: initial;
-  padding: 9px 25px;
+  padding: 9px 25px 9px 0;
   top: 0;
-  margin-left: -25px;
   line-height: normal;
   border: none;
 }
@@ -381,3 +380,6 @@ section.fixed-header.positioned {
   box-shadow: 0 0 15px #333;
 }
 
+.modal-footer.center, .modal-title.center {
+  text-align: center;
+}

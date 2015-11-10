@@ -80,7 +80,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
 
   <div class="col-xs-12 col-sm-6 mb1e np">
     <div class="border1 col-xs-12">
-      <h5>Ордера на продажу BTC</h5>
+      <h4>Ордера на продажу BTC</h4>
 
       <p class="flr">Всего <?php echo $orders['total']['sell']; ?> BTC</p>
 
@@ -106,7 +106,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
   </div>
   <div class="col-xs-12 col-sm-6 mb1e np">
     <div class="border1 col-xs-12">
-      <h5>Ордера на покупку BTC</h5>
+      <h4>Ордера на покупку BTC</h4>
 
       <p class="flr">Всего <?php echo $orders['total']['buy']; ?> BTC</p>
 
@@ -140,11 +140,11 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
       <table class="table" style="width: 100%">
         <thead>
         <tr class="table-bg">
-          <th><?php echo Yii::t('general', 'Дата'); ?><div><?php echo Yii::t('general', 'Дата'); ?></div></th>
-          <th><?php echo Yii::t('general', 'Тип'); ?><div><?php echo Yii::t('general', 'Тип'); ?></div></th>
-          <th><?php echo Yii::t('general', 'Цена'); ?><div><?php echo Yii::t('general', 'Цена'); ?></div></th>
-          <th><?php echo Yii::t('general', 'Кол-во (BTC)'); ?><div><?php echo Yii::t('general', 'Кол-во (BTC)'); ?></div></th>
-          <th><?php echo Yii::t('general', 'Всего (USD)'); ?><div><?php echo Yii::t('general', 'Всего (USD)'); ?></div></th>
+          <th><?php echo ''; Yii::t('general', 'Дата'); ?><div><?php echo Yii::t('general', 'Дата'); ?></div></th>
+          <th><?php echo ''; Yii::t('general', 'Тип'); ?><div><?php echo Yii::t('general', 'Тип'); ?></div></th>
+          <th><?php echo '';  Yii::t('general', 'Цена'); ?><div><?php echo Yii::t('general', 'Цена'); ?></div></th>
+          <th><?php echo '';  Yii::t('general', 'Кол-во (BTC)'); ?><div><?php echo Yii::t('general', 'Кол-во (BTC)'); ?></div></th>
+          <th><?php echo '';  Yii::t('general', 'Всего (USD)'); ?><div><?php echo Yii::t('general', 'Всего (USD)'); ?></div></th>
         </tr>
         </thead>
         <tbody>
@@ -175,8 +175,8 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
 </div>
 <div class="col-md-4 col-xs-12">
 <?php if (!$app->user->isGuest) {
-  ?><div id="userOrders" class="col-xs-12">
-    <h2><?php echo Yii::t('general', 'My open orders'); ?></h2>
+  ?><div id="userOrders" class="col-xs-12 mb1e">
+    <h4><?php echo Yii::t('general', 'My open orders'); ?></h4>
     <?php $this->renderPartial('inc/userOrdersTable', array('userOrders' => $userOrders), false); ?>
   </div>
 <?php } ?>

@@ -89,8 +89,9 @@ class OrderController extends Controller
                 $errors['order'][] = array('order', $errorMsg);
             }
         }
-        $order->status = Order::STATUS_CANCELED;
+//        $order->status = Order::STATUS_CANCELED;
         if (!$order->cancel()) {
+          $status = 'error';
           $errors['order'] = array_merge($errors['order'], $order->getErrors());
         }
         echo json_encode(array(
@@ -98,7 +99,6 @@ class OrderController extends Controller
           'errors' => $errors
         ));
         die();
-
     }
 
     public function actionGetChanges() {

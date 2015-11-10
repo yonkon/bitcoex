@@ -14,7 +14,7 @@ $app = Yii::app();
     <form action="<?php cecho( $app->createUrl('order/create') ); ?>" method="post">
     <input type="hidden" name="src_wallet" value="<?php  if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->id ); ?>">
     <input type="hidden" name="dst_wallet" value="<?php  if (!empty($wallets['USD']) ) cecho( $wallets['USD']->id ); ?>">
-    <h5>Продать BTC</h5>
+    <h4>Продать BTC</h4>
 
     <div class="col-xs-12 order-h mb1e">
         <div class="col-xs-6 np">
