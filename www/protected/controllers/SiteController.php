@@ -96,7 +96,7 @@ class SiteController extends Controller
             'limit' => 500
         ));
 
-        $transactionGroups = Transaction::prepareForPlot($transactions);
+        $transactionGroups = Transaction::prepareForPlot(array_reverse($transactions));
 
         $userOrders = array();
         if (Yii::app()->user->isGuest) {
