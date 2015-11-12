@@ -85,18 +85,23 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
       <p class="flr">Всего <?php echo $orders['total']['sell']; ?> BTC</p>
 
       <div style="overflow:auto; max-height: 500px;" class="col-xs-12 np">
-        <table class="table" style="width: 100%">
-          <tbody>
+        <table id="sellOrdersTable" class="table" style="width: 100%">
+          <thead>
           <tr class="table-bg">
             <th>Цена</th>
             <th>BTC</th>
             <th>USD</th>
           </tr>
+          </thead>
+          <tbody>
           <?php foreach ($orders['sell'] as $no => $order) { ?>
-            <tr <?php if ($order->user == $app->user->id) { ?> style="color: gainsboro; "<?php } ?>>
-              <td><?php echo $order->price; ?></td>
-              <td><?php echo $order->rest; ?></td>
-              <td><?php echo $order->restCurrencyEquivalent(); ?></td>
+            <tr
+              <?php if ($order->user == $app->user->id) { ?> style="color: gainsboro; "<?php } ?>
+              data-oid="<?php echo $order->id ;?>"
+               >
+              <td class="price"><?php echo $order->price; ?></td>
+              <td class="btc"><?php echo $order->rest; ?></td>
+              <td class="usd"><?php echo $order->restCurrencyEquivalent(); ?></td>
             </tr>
           <?php } ?>
           </tbody>
@@ -111,18 +116,23 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
       <p class="flr">Всего <?php echo $orders['total']['buy']; ?> BTC</p>
 
       <div style="overflow:auto; max-height: 500px;" class="col-xs-12 np">
-        <table class="table" style="width: 100%">
-          <tbody>
+        <table id="buyOrdersTable" class="table" style="width: 100%">
+          <thead>
           <tr class="table-bg">
             <th>Цена</th>
             <th>BTC</th>
             <th>USD</th>
           </tr>
+          </thead>
+          <tbody>
           <?php foreach ($orders['buy'] as $no => $order) { ?>
-            <tr<?php if ($order->user == $app->user->id) { ?> style="color: gainsboro; "<?php } ?>>
-              <td><?php echo $order->price; ?></td>
-              <td><?php echo $order->rest; ?></td>
-              <td><?php echo $order->restCurrencyEquivalent(); ?></td>
+            <tr
+              <?php if ($order->user == $app->user->id) { ?> style="color: gainsboro; "<?php } ?>
+              data-oid="<?php echo $order->id ;?>"
+              >
+              <td class="price"><?php echo $order->price; ?></td>
+              <td class="btc"><?php echo $order->rest; ?></td>
+              <td class="usd"><?php echo $order->restCurrencyEquivalent(); ?></td>
             </tr>
           <?php } ?>
           </tbody>

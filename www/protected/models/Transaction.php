@@ -27,7 +27,7 @@ class Transaction extends CActiveRecord
      * @see date()
      * @return Transaction[] TransactionsGroups as hash array with keys like date formatted strings and values like arrays of Transactions, having date that belongs to date group, represented by key plus aggregated values for OHLCV plot
      */
-    public static function prepareForPlot($transactions, $lengthSeconds = Helpers::SECONDS_IN_DAY, $timeGroupModule = 2, $timeGroupMeasureItem ='i', $endTime = null, $indexFormat = 'm/d/Y H:i')
+    public static function prepareForPlot($transactions, $lengthSeconds = Helpers::SECONDS_IN_WEEK, $timeGroupModule = 10, $timeGroupMeasureItem ='i', $endTime = null, $indexFormat = 'm/d/Y H:i')
     {
         $transactionGroups = self::groupByTime($transactions, $lengthSeconds, $timeGroupModule, $timeGroupMeasureItem, $endTime, $indexFormat);
         /**

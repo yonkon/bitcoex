@@ -110,7 +110,46 @@ class OrderController extends Controller
       } else {
         $date = $_REQUEST['date'];
       }
-
+      $recent_orders = Order::getModifiedAfter($date);
+      $lastModified = $recent_orders[0]->modified;
+      $result = array();
+      foreach($recent_orders as $order) {
+        /**
+         * @var Order $order
+         */
+        $typeTranslateString = 'Buy';
+        $typeIndex = 'buy';
+        if ($order->isBTCBuy()) {
+          $typeTranslateString = 'Buy';
+          $typeIndex = 'buy';
+        }
+        if ($order->isBTCSell()) {
+          $typeIndex = 'sell';
+          $typeTranslateString = 'Sell';
+        }
+        $orderData = array(
+          'id' => $order->id,
+          'date' => $order->date,
+          'modified' => $order->modified,
+          'type' => Yii::t('order', $typeTranslateString),
+          'price' => $order->price,
+          'summ' => $order->summ,
+          'rest' => $order->rest,
+          'btc' => $order->restCryptoEquivalent(),
+          'usd' => $order->restCurrencyEquivalent(),
+          'status' => $order->status,
+        );
+        $result[$typeIndex][] = $orderData;
+        if ($order->user == Yii::app()->user->id) {
+          $result['my'][$typeIndex][] = $orderData;
+        }
+      }
+      echo json_encode(array(
+        'status' => 'OK',
+        'orders' => $result,
+        'last_modified' => $lastModified
+      ));
+      die();
     }
 
     // Uncomment the following methods and override them if needed

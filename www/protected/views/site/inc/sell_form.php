@@ -62,7 +62,6 @@ $app = Yii::app();
                    style="float: right;"
                    data-min-price="<?php if (!empty($min_buy_order) ) cecho($min_buy_order->price); ?>"
                    data-max_price="<?php if (!empty($max_sell_order) )cecho( $max_sell_order->price); ?>">
-                >
                     Продать BTC
                 </a>
 

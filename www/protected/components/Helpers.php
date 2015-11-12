@@ -81,4 +81,9 @@ class Helpers
     public static function roundWeeksUp     ($time, $module )   {  return self::roundTimeUp($time, $module * 7, self::FORMAT_WEEK );}
     public static function roundMonthUp     ($time, $module )   {  return self::roundTimeUp($time, $module,     self::FORMAT_MONTY );   }
     public static function roundYearsUp     ($time, $module )   {  return self::roundTimeUp($time, $module,     self::FORMAT_YEAR );    }
+
+    public static function dateFormat($date)
+    {
+        return date('d/m H:i:s', $date);
+    }
 }

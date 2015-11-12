@@ -402,6 +402,7 @@ ORDER BY date ASC");
     if (!empty($cond) ) {
       $condition .= " AND {$cond}";
     }
+    $condition .= ' ORDER BY modified DESC';
     return self::model()->findAll($condition);
   }
 

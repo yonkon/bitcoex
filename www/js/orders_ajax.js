@@ -135,17 +135,86 @@ $(document).ready(
                 document.selection.empty();
         });
 
-        function updateOrders(date) {
-            $.ajax({
-                url : 'order/getChanges',
-                data : {
-                    date : date,
-                    ajax : true
-                },
-                success : function(response) {
-                    var res = JSON.parse(response);
-                }
-            });
-        }
+        setTimeout(updateOrders, 1000);
     }
 );
+
+function updateOrders(date) {
+    $.ajax({
+        url : 'order/getChanges',
+        data : {
+            date : date,
+            ajax : true
+        },
+        success : function(response) {
+            var res = JSON.parse(response);
+            if (typeof res != 'undefined' && typeof res.orders != 'undefined') {
+                console.dir(res);
+                if (typeof res.orders.sell != 'undefined') {
+                    updateSellOrders(res.orders.sell);
+                }
+                if (typeof res.orders.buy != 'undefined') {
+                    updateBuyOrders(res.orders.buy);
+                }
+                //if (typeof res.orders.my != 'undefined') {
+                //    updateMyOrders(res.orders.my);
+                //}
+                setTimeout(function(){ updateOrders(res.last_modified);},5000);
+                if (res.status == "OK") {
+                    console.log('ok');
+                }
+            }
+        }
+    });
+}
+
+function updateSellOrders(orders) {
+    $.each(orders, function(index, order){
+        var id = order.id;
+        var price = order.price;
+        var btc = order.btc;
+        var usd = order.usd;
+        var status = order.status; //0 - новый(открытый), 1 - закрыт, 2 - отменен
+        var $tr = $('#sellOrdersTable tr[data-oid="' + id + '"]');
+        if ($tr.length > 0) {
+            if (status != 0){
+                $tr.remove();
+            } else {
+                $tr.find('.price').text(price);
+                $tr.find('.btc').text(btc);
+                $tr.find('.usd').text(usd);
+            }
+        } else {
+            if (status == 0) { //если это открытый ордер
+            var $newTr = $('<tr data-oid="' +id+ '"><td class="price">' + price + '</td><td class="btc">' + btc +'</td><td class="usd">' +usd+'</td></tr>');
+                $('#sellOrdersTable tbody').prepend($newTr);
+            }
+        }
+    });
+}
+
+function updateBuyOrders(orders) {
+    $.each(orders, function(index, order){
+        var id = order.id;
+        var price = order.price;
+        var btc = order.btc;
+        var usd = order.usd;
+        var status = order.status; //0 - новый(открытый), 1 - закрыт, 2 - отменен
+        var $tr = $('#buyOrdersTable tr[data-oid="' + id + '"]');
+        if ($tr.length > 0) {
+            if (status != 0){
+                $tr.remove();
+            } else {
+                $tr.find('.price').text(price);
+                $tr.find('.btc').text(btc);
+                $tr.find('.usd').text(usd);
+            }
+        } else {
+            if (status == 0) { //если это открытый ордер
+            var $newTr = $('<tr data-oid="' +id+ '"><td class="price">' + price + '</td><td class="btc">' + btc +'</td><td class="usd">' +usd+'</td></tr>');
+                $('#buyOrdersTable tbody').prepend($newTr);
+            }
+        }
+    });
+}
+
