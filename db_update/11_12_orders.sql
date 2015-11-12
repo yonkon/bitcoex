@@ -1,0 +1,1 @@
+ALTER TABLE  `tbl_order` ADD  `modified` INT NOT NULL DEFAULT  '0'

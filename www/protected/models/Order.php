@@ -17,6 +17,7 @@
  * @property double $rest
  * @property integer $date
  * @property integer $status
+ * @property integer $modified
  */
 class Order extends CActiveRecord
 {
@@ -41,12 +42,12 @@ class Order extends CActiveRecord
     // will receive user inputs.
     return array(
       array('user, src_wallet, summ, price, dst_wallet, rest, status', 'required'),
-      array('id, user, src_wallet, src_wallet_type, dst_wallet, dst_wallet_type, date, status', 'numerical', 'integerOnly' => true),
+      array('id, user, src_wallet, src_wallet_type, dst_wallet, dst_wallet_type, date, status, modified', 'numerical', 'integerOnly' => true),
       array('summ, price, rest', 'numerical'),
       array('summ, price, rest', 'compare', 'operator' => '>=', 'compareValue' => 0),
       // The following rule is used by search().
       // @todo Please remove those attributes that should not be searched.
-      array('id, user, src_wallet, src_wallet_type, summ, price, dst_wallet, dst_wallet_type, rest, date, status', 'safe', 'on' => 'search'),
+      array('id, user, src_wallet, src_wallet_type, summ, price, dst_wallet, dst_wallet_type, rest, date, status, modified', 'safe', 'on' => 'search'),
     );
   }
 
@@ -69,17 +70,18 @@ class Order extends CActiveRecord
   public function attributeLabels()
   {
     return array(
-      'id' => 'ID',
-      'user' => 'User',
-      'src_wallet' => 'Src Wallet',
-      'src_wallet_type' => 'Src Wallet Type',
-      'summ' => 'Summ',
-      'price' => 'Price',
-      'dst_wallet' => 'Dst Wallet',
-      'dst_wallet_type' => 'Dst Wallet Tpe',
-      'rest' => 'Rest',
-      'date' => 'Date',
-      'status' => 'Status',
+      'id'              => Yii::t('order', 'ID'),
+      'user'            => Yii::t('order', 'User'),
+      'src_wallet'      => Yii::t('order', 'Src Wallet'),
+      'src_wallet_type' => Yii::t('order', 'Src Wallet Type'),
+      'summ'            => Yii::t('order', 'Summ'),
+      'price'           => Yii::t('order', 'Price'),
+      'dst_wallet'      => Yii::t('order', 'Dst Wallet'),
+      'dst_wallet_type' => Yii::t('order', 'Dst Wallet Type'),
+      'rest'            => Yii::t('order', 'Rest'),
+      'date'            => Yii::t('order', 'Date'),
+      'status'          => Yii::t('order', 'Status'),
+      'modified'        => Yii::t('order', 'Modified'),
     );
   }
 
@@ -112,6 +114,7 @@ class Order extends CActiveRecord
     $criteria->compare('rest', $this->rest);
     $criteria->compare('date', $this->date);
     $criteria->compare('status', $this->status);
+    $criteria->compare('modified', $this->status);
 
     return new CActiveDataProvider($this, array(
       'criteria' => $criteria,
@@ -394,6 +397,14 @@ ORDER BY date ASC");
     return (!$this->hasErrors());
   }
 
+  public static function getModifiedAfter($startDate, $cond = '') {
+    $condition = "modified >= {$startDate}";
+    if (!empty($cond) ) {
+      $condition .= " AND {$cond}";
+    }
+    return self::model()->findAll($condition);
+  }
+
 //    protected function beforeValidate()
 //    {
 //        $cur_date = $this->date;
@@ -408,11 +419,11 @@ ORDER BY date ASC");
 //        return parent::beforeSave();
 //    }
 
-//    protected function beforeSave()
-//    {
-//        $this->date = date('Y-m-d H:i:s', $this->date);
-//        return parent::beforeSave();
-//    }
+    protected function beforeSave()
+    {
+        $this->modified = time();
+        return parent::beforeSave();
+    }
 //
 //    protected function afterSave() {
 //        $this->date = strtotime($this->date);
