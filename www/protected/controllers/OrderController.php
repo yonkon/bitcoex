@@ -139,10 +139,27 @@ class OrderController extends Controller
           'usd' => $order->restCurrencyEquivalent(),
           'status' => $order->status,
         );
+
         $result[$typeIndex][] = $orderData;
         if ($order->user == Yii::app()->user->id) {
           $result['my'][$typeIndex][] = $orderData;
         }
+      }
+      $recent_history = Transaction::model()->findAll("date >= {$date} ORDER BY date DESC");
+      /**
+       * @var Transaction $history
+       */
+      foreach($recent_history as $history){
+        $historyData = array(
+          'id' => $history->id,
+          'date' => $history->date,
+          '_type' => ($history->isBTCSell())? 'sell' : 'buy',
+          'type' => ($history->isBTCSell())? Yii::t('order', 'Sell') : Yii::t('order', 'Buy'),
+          'price' => $history->src_price,
+          'btc' => $history->srcBTCEquivalent(),
+          'usd' => $history->srcUSDEquivalent(),
+        );
+        $result['history'][] = $historyData;
       }
       echo json_encode(array(
         'status' => 'OK',

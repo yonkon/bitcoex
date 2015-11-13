@@ -156,6 +156,9 @@ function updateOrders(date) {
                 if (typeof res.orders.buy != 'undefined') {
                     updateBuyOrders(res.orders.buy);
                 }
+                if (typeof res.orders.history != 'undefined') {
+                    updateHistory(res.orders.history);
+                }
                 //if (typeof res.orders.my != 'undefined') {
                 //    updateMyOrders(res.orders.my);
                 //}
@@ -168,14 +171,14 @@ function updateOrders(date) {
     });
 }
 
-function updateSellOrders(orders) {
+function updateBuySellOrders(orders, type) {
     $.each(orders, function(index, order){
         var id = order.id;
         var price = order.price;
         var btc = order.btc;
         var usd = order.usd;
         var status = order.status; //0 - новый(открытый), 1 - закрыт, 2 - отменен
-        var $tr = $('#sellOrdersTable tr[data-oid="' + id + '"]');
+        var $tr = $('#' +type+ 'OrdersTable tr[data-oid="' + id + '"]');
         if ($tr.length > 0) {
             if (status != 0){
                 $tr.remove();
@@ -187,34 +190,53 @@ function updateSellOrders(orders) {
         } else {
             if (status == 0) { //если это открытый ордер
             var $newTr = $('<tr data-oid="' +id+ '"><td class="price">' + price + '</td><td class="btc">' + btc +'</td><td class="usd">' +usd+'</td></tr>');
-                $('#sellOrdersTable tbody').prepend($newTr);
+                $('#' +type+ 'OrdersTable tbody').prepend($newTr);
             }
         }
     });
+}
+function updateHistory(recent_history) {
+    $.each(recent_history, function(index, transaction){
+        var id = transaction.id;
+        var date = transaction.date;
+        var _type = transaction._type;
+        var type = transaction.type;
+        var price = transaction.price;
+        var btc = transaction.btc;
+        var usd = transaction.usd;
+        var $tr = $('#orderHistory tr[data-tid=' +id+ ']');
+        if (!$tr.length) {
+            var $newTr = $('<tr data-tid="' +id+ '"><td class="date">' + timestamp2date('d/m H:i:s', date) + '</td><td class="type ' +_type+ '">' + type +'</td><td class="price">' +price+'</td><td class="btc">' +btc+' BTC</td><td class="usd">' +usd+' USD</td></tr>');
+            $('#orderHistory tbody').prepend($newTr);
+        }
+    });
+}
+
+function updateSellOrders(orders) {
+    return updateBuySellOrders(orders, 'sell');
 }
 
 function updateBuyOrders(orders) {
-    $.each(orders, function(index, order){
-        var id = order.id;
-        var price = order.price;
-        var btc = order.btc;
-        var usd = order.usd;
-        var status = order.status; //0 - новый(открытый), 1 - закрыт, 2 - отменен
-        var $tr = $('#buyOrdersTable tr[data-oid="' + id + '"]');
-        if ($tr.length > 0) {
-            if (status != 0){
-                $tr.remove();
-            } else {
-                $tr.find('.price').text(price);
-                $tr.find('.btc').text(btc);
-                $tr.find('.usd').text(usd);
-            }
-        } else {
-            if (status == 0) { //если это открытый ордер
-            var $newTr = $('<tr data-oid="' +id+ '"><td class="price">' + price + '</td><td class="btc">' + btc +'</td><td class="usd">' +usd+'</td></tr>');
-                $('#buyOrdersTable tbody').prepend($newTr);
-            }
-        }
-    });
+    return updateBuySellOrders(orders, 'buy');
 }
 
+function timestamp2date(format, timest) {
+    var d = new Date(timest*1000);
+    var date = d.getDate();
+    date = date > 9 ? date : '0'+date;
+    var month = d.getMonth() + 1;
+    month = month > 9 ? month : '0'+month;
+    var hours = d.getHours();
+    hours = hours > 9 ? hours : '0'+hours;
+    var minutes = d.getMinutes();
+    minutes = minutes > 9 ? minutes : '0'+minutes;
+    var seconds = d.getSeconds();
+    seconds = seconds > 9 ? seconds : '0'+seconds;
+
+    return format.replace('d', date)
+        .replace('m', month)
+        .replace('Y', d.getFullYear())
+        .replace('H', hours)
+        .replace('i', minutes)
+        .replace('s', seconds);
+}

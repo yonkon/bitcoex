@@ -383,3 +383,14 @@ section.fixed-header.positioned {
 .modal-footer.center, .modal-title.center {
   text-align: center;
 }
+
+td.type {
+  font-weight: bolder;
+}
+
+td.type.buy {
+  color : green;
+}
+td.type.sell {
+  color: red;
+}

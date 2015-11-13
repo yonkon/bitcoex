@@ -147,7 +147,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
     <h4><?php echo Yii::t('general', 'История сделок:'); ?></h4>
 <section class="fixed-header table-bg">
     <div style="overflow:auto; max-height: 300px;">
-      <table class="table" style="width: 100%">
+      <table id="orderHistory" class="table" style="width: 100%">
         <thead>
         <tr class="table-bg">
           <th><?php echo ''; Yii::t('general', 'Дата'); ?><div><?php echo Yii::t('general', 'Дата'); ?></div></th>
@@ -159,7 +159,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
         </thead>
         <tbody>
         <?php foreach ($transactions as $tr_id => $transaction) { ?>
-          <tr>
+          <tr data-tid="<?php echo $transaction->id; ?>">
             <td><span><?php echo date('d/m H:i:s', $transaction->date); ?></span></td>
             <td>
               <b style="color:<?php if ($transaction->isBTCBuy()) {
