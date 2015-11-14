@@ -141,7 +141,7 @@ $(document).ready(
 
 function updateOrders(date) {
     $.ajax({
-        url : 'order/getChanges',
+        url : '/index.php/order/getChanges',
         data : {
             date : date,
             ajax : true

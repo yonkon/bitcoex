@@ -122,7 +122,7 @@
           },
           '<?php echo Yii::t('general', 'Yes'); ?>': function () {
             $.ajax({
-              url: '/order/cancel/' + oid,
+              url: '<?php echo Yii::app()->createUrl('/order/cancel/');?>/' + oid,
               data: {ajax: true},
               method: 'post',
               success: function (data) {
