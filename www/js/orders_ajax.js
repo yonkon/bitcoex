@@ -6,7 +6,7 @@ function processAjaxSuccess(data, cb, callOnError) {
         data = JSON.parse(data);
         if (data.status == "OK") {
             if (typeof cb != 'function') {
-                window.location.reload();
+               // window.location.reload();
             } else {
                 cb(data);
             }
@@ -139,6 +139,20 @@ $(document).ready(
     }
 );
 
+function updateWallet(type, data) {
+    var selector = 'p.wallet-rest.'+type;
+    $(selector + ' .available').text(data.available);
+    $(selector + ' .money').text(data.money);
+}
+function updateWalletUSD( data) {
+    updateWallet('usd', data);
+}
+function updateWalletBTC( data) {
+    updateWallet('btc', data);
+}
+
+
+
 function updateOrders(date) {
     $.ajax({
         url : '/index.php/order/getChanges',
@@ -159,6 +173,33 @@ function updateOrders(date) {
                 if (typeof res.orders.history != 'undefined') {
                     updateHistory(res.orders.history);
                 }
+                if (typeof res.wallets != 'undefined') {
+                    if (typeof res.wallets.usd != 'undefined') {
+                        updateWalletUSD(res.wallets.usd);
+                    }
+                    if (typeof res.wallets.btc != 'undefined') {
+                        updateWalletBTC(res.wallets.btc);
+                    }
+                }
+
+                if (typeof res.orders.min != 'undefined') {
+                    if (typeof res.orders.min.buy != 'undefined') {
+                        $('#buy_form .price-min').text(res.orders.min.buy);
+                    }
+                    if (typeof res.orders.min.sell != 'undefined') {
+                        $('#sell_form .price-min').text(res.orders.min.sell);
+                    }
+                }
+                if (typeof res.orders.max != 'undefined') {
+                    if (typeof res.orders.max.buy != 'undefined') {
+                        $('#buy_form .price-max').text(res.orders.max.buy);
+                    }
+                    if (typeof res.orders.max.sell != 'undefined') {
+                        $('#sell_form .price-max').text(res.orders.max.sell);
+                    }
+                }
+
+
                 //if (typeof res.orders.my != 'undefined') {
                 //    updateMyOrders(res.orders.my);
                 //}

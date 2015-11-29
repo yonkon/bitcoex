@@ -167,7 +167,7 @@ $app->clientScript->registerScript('indexDrawPlotInline', $drawPlotInline, CClie
               } else {
                 ?>red<?php }
               ?>">
-                <?php echo Yii::t('general', $transaction->isBTCBuy()?'Покупка':'Продажа');?>
+                <?php echo Yii::t('general', $transaction->isBTCBuy()? Yii::t('general', 'Покупка'):Yii::t('generel', 'Продажа'));?>
               </b>
             </td>
             <td><?php echo $transaction->src_price; ?></td>

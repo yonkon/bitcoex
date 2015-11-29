@@ -10,23 +10,27 @@
 $app = Yii::app();
 
 ?>
-<div id="buy_form" class="col-xs-12">
+<div id="buy_form" class="col-xs-12" xmlns="http://www.w3.org/1999/html">
     <form action="<?php cecho( $app->createUrl('order/create')); ?>" method="post">
         <input type="hidden" name="src_wallet" value="<?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->id); ?>">
         <input type="hidden" name="dst_wallet" value="<?php if (!empty($wallets['BTC']) )cecho( $wallets['BTC']->id); ?>">
-        <h4>Купить BTC</h4>
+        <h4><?php echo Yii::t('general', 'Купить BTC');?></h4>
         <div class="col-xs-12 order-h mb1e">
-            <div class="col-xs-6 np">
-                <span class="">Ваши средства:</span>
+            <div class="col-xs-6 np wallet-rest usd">
+                <span class=""><?php echo Yii::t('general', 'Ваши средства:');?></span>
+                <p >
+                  <a href=""><span class="available"><?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->available); ?></span> USD</a>
+                </p>
+                <p class="small">
+                  <a href=""><span class="money"><?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->money); ?></span> USD</a>
+                </p>
 
-                <p class=""><a href=""><?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->available); ?> USD</a></p>
-                <p class="small"><a href=""><?php if (!empty($wallets['USD']) ) cecho( $wallets['USD']->money); ?> USD</a></p>
             </div>
             <div class="col-xs-6">
                 <span>Min/Max  цена:</span>
                 <p>
                     <b class="price-minimax">
-                        <?php if (!empty($min_sell_order) ) cecho($min_sell_order->price); ?>/<?php if (!empty($max_sell_order) )cecho( $max_sell_order->price); ?> USD
+                        <span class="price-min"><?php if (!empty($min_sell_order) ) cecho($min_sell_order->price); ?></span>/<span class="price-max" <?php if (!empty($max_sell_order) )cecho( $max_sell_order->price); ?></span> USD
                     </b>
                 </p>
             </div>

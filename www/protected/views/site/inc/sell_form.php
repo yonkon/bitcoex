@@ -14,18 +14,23 @@ $app = Yii::app();
     <form action="<?php cecho( $app->createUrl('order/create') ); ?>" method="post">
     <input type="hidden" name="src_wallet" value="<?php  if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->id ); ?>">
     <input type="hidden" name="dst_wallet" value="<?php  if (!empty($wallets['USD']) ) cecho( $wallets['USD']->id ); ?>">
-    <h4>Продать BTC</h4>
+    <h4><?php echo Yii::t('general', 'Продать BTC');?></h4>
 
     <div class="col-xs-12 order-h mb1e">
-        <div class="col-xs-6 np">
-            <span class="">Ваши средства:</span>
-            <p class=""><a href=""><?php  if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->available ); ?> BTC</a></p>
-            <p class="small"><a href=""><?php if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->money); ?> BTC</a></p>
+        <div class="col-xs-6 np wallet-rest btc">
+            <span class=""><?php echo Yii::t('general', 'Ваши средства:');?></span>
+            <p>
+                <a href=""><span class="available"><?php  if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->available ); ?></span> BTC</a>
+            </p>
+            <p class="small">
+              <a href="" ><span class="money"><?php if (!empty($wallets['BTC']) ) cecho( $wallets['BTC']->money); ?></span> BTC</a>
+            </p>
+
 
         </div>
         <div class="col-xs-6">
             <span>Max/Min цена:</span>
-            <p><b><?php  if (!empty($max_buy_order) ) cecho( $max_buy_order->price ); ?>/<?php  if (!empty($min_buy_order) ) cecho( $min_buy_order->price ); ?> USD</b></p>
+            <p><b><span class="price-max"><?php  if (!empty($max_buy_order) ) cecho( $max_buy_order->price ); ?></span>/<span class="price-min"><?php  if (!empty($min_buy_order) ) cecho( $min_buy_order->price ); ?></span> USD</b></p>
         </div>
     </div>
     <table class="col-xs-12 order-t">

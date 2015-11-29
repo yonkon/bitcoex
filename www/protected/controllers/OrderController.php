@@ -112,7 +112,15 @@ class OrderController extends Controller
       }
       $recent_orders = Order::getModifiedAfter($date);
       $lastModified = $recent_orders[0]->modified;
-      $result = array();
+      $result = array('min' => array(
+          'buy' => 0,
+          'sell' => 0
+        ),
+        'max' => array(
+          'buy' => 0,
+          'sell' => 0
+        )
+      );
       foreach($recent_orders as $order) {
         /**
          * @var Order $order
@@ -141,6 +149,12 @@ class OrderController extends Controller
         );
 
         $result[$typeIndex][] = $orderData;
+        if ($result['min'][$typeIndex] == 0 || $result['min'][$typeIndex] > $orderData['price']) {
+          $result['min'][$typeIndex] = $orderData['price'];
+        }
+        if ($result['max'][$typeIndex] == 0 || $result['max'][$typeIndex] < $orderData['price']) {
+          $result['max'][$typeIndex] = $orderData['price'];
+        }
         if ($order->user == Yii::app()->user->id) {
           $result['my'][$typeIndex][] = $orderData;
         }
@@ -161,9 +175,26 @@ class OrderController extends Controller
         );
         $result['history'][] = $historyData;
       }
+      $resultWallets = array();
+      if (!Yii::app()->user->isGuest) {
+        $uid = Yii::app()->user->id;
+        $wallets = Wallet::model()->findAll("user_id = $uid");
+        foreach($wallets as $wallet) {
+          if ($wallet->type == Wallet::WALLET_TYPE_WMZ) {
+            $resultWallets['usd']['money'] = $wallet->money;
+            $resultWallets['usd']['available'] = $wallet->available;
+          }
+          if ($wallet->type == Wallet::WALLET_TYPE_BTC) {
+            $resultWallets['btc']['money'] = $wallet->money;
+            $resultWallets['btc']['available'] = $wallet->available;
+          }
+        }
+      }
+
       echo json_encode(array(
         'status' => 'OK',
         'orders' => $result,
+        'wallets' => $resultWallets,
         'last_modified' => $lastModified
       ));
       die();
