@@ -212,11 +212,13 @@ class User extends CActiveRecord
         $wm_wallet->user_id = $this->id;
         $wm_wallet->type = Wallet::WALLET_TYPE_WMZ;
         $wm_wallet->money = rand(100, 5000);
+        $wm_wallet->available = $wm_wallet->money;
         $wm_wallet->save();
         $btc_wallet = new Wallet;
         $btc_wallet->user_id = $this->id;
         $btc_wallet->type = Wallet::WALLET_TYPE_BTC;
         $btc_wallet->money = rand(10, 150);
-        $btc_wallet->save();
+      $btc_wallet->available = $btc_wallet->money;
+      $btc_wallet->save();
     }
 }
