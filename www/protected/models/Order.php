@@ -155,6 +155,7 @@ ORDER BY date ASC");
     foreach ($currentOrders as $ord) {
       if ($this->rest == 0) {
         $this->status = Order::STATUS_CLOSED;
+        $this->processOrderBonuses();
         $this->save();
         break;
       }
@@ -425,6 +426,14 @@ ORDER BY date ASC");
         $this->modified = time();
         return parent::beforeSave();
     }
+
+  private function processOrderBonuses()
+  {
+    $history = Transaction::findAll(array('order' => $this->id));
+    foreach ($history as $ta) {
+
+    }
+  }
 //
 //    protected function afterSave() {
 //        $this->date = strtotime($this->date);
